@@ -33,7 +33,12 @@ const createCustomer = async (req, res) => {
   try {
     const { name, description, priorityPoint, status } = req.body;
 
-    const CustomerId = mongoose.Types.ObjectId();
+    const customerRecord = await Customer.findOne({ name });
+
+    if (customerRecord) {
+      throw new ErrorHandler(400, '', 'ERROR_CUSTOMER');
+    }
+    console.log(description);
     await Customer.create({ name, description, priorityPoint, status });
     const response = handleResponse(200, '', '');
     return res.status(response.status).json(response);

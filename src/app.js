@@ -2,7 +2,6 @@ import Axios from 'axios';
 import express from 'express';
 import database from './config/database';
 import dependencies from './config/dependencies';
-import logger from './helpers/logger';
 import { Client } from './models';
 import routes from './config/routes';
 var mongoose = require('mongoose');

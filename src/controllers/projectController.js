@@ -6,6 +6,7 @@ import {
   Project,
   ProjectCategory,
   Staff,
+  StaffExp,
   Tech,
 } from '../models';
 import len from '../services/arrayLength';
@@ -24,7 +25,7 @@ export {
 
 const getProjectList = async (req, res) => {
   try {
-    const projects = await Project.find({});
+    const projects = await Project.find({}).lean();
     const response = handleResponse(200, '', '', { projects });
     return res.status(response.status).json(response);
   } catch (error) {
@@ -50,12 +51,13 @@ const getProjectDetail = async (req, res) => {
 const createProject = async (req, res) => {
   try {
     const {
+      name,
       description,
       techsId,
       projectCategoriesId,
       officesId,
       staffsId,
-      customersId,
+      customerId,
       status,
     } = req.body;
 
@@ -67,7 +69,7 @@ const createProject = async (req, res) => {
     });
 
     if (len(techsRecord) < len(techsId)) {
-      throw new ErrorHandler(404, '', '');
+      throw new ErrorHandler(404, '', 'ERROR_TECH');
     }
 
     const staffsRecord = await Staff.find({
@@ -77,7 +79,7 @@ const createProject = async (req, res) => {
     }).select({ _id: 1 });
 
     if (len(staffsRecord) < len(staffsId)) {
-      throw new ErrorHandler(400, '', '');
+      throw new ErrorHandler(400, '', 'ERROR_STAFF');
     }
 
     const officesRecord = await Office.find({
@@ -87,6 +89,7 @@ const createProject = async (req, res) => {
     }).select({ _id: 1 });
 
     if (len(officesRecord) < len(officesId)) {
+      throw new ErrorHandler(400, '', 'ERROR_OFFICE');
     }
 
     const projectCategoriesRecord = await ProjectCategory.find({
@@ -96,13 +99,24 @@ const createProject = async (req, res) => {
       status: 'active',
     }).select({ _id: 1 });
 
-    if (len(projectCategoriesRecord) < len(officesId)) {
-      throw new ErrorHandler(400, '', '');
+    if (len(projectCategoriesRecord) < len(projectCategoriesId)) {
+      throw new ErrorHandler(400, '', 'ERROR_PROJECT_CATEGORY');
     }
 
-    // const customerRecord = await Customer.findById(customerId).select({
-    //   _id: 1,
-    // });
+    const customerRecord = await Customer.findOne({
+      _id: customerId,
+      status: 'active',
+    }).select({
+      _id: 1,
+    });
+
+    if (!customerRecord) {
+      throw new ErrorHandler(
+        404,
+        'Customer not found or not active. Please check!',
+        'CUSTOMER_NOT_FOUND'
+      );
+    }
 
     // const techsRecord = await Tech.aggregate([
     //   { $project: { status: 1 } },
@@ -123,22 +137,50 @@ const createProject = async (req, res) => {
 
     // const officeRecord = Office.findById({ _id: officeId });
 
-    // const projectRecord = await Project.create({
-    //   description,
-    //   projectCategoryId,
-    //   techsId,
-    //   officeId,
-    //   staffIds,
-    // });
-    const response = handleResponse(200, '', '', techsRecord);
+    const projectRecord = await Project.create({
+      name,
+      description,
+      techsId,
+      projectCategoriesId,
+      officesId,
+      staffsId,
+      customerId,
+      status,
+    });
+
+    await Office.updateMany(
+      {
+        _id: {
+          $in: officesId,
+        },
+      },
+      {
+        $push: {
+          projectsId: projectRecord._id,
+        },
+      }
+    );
+
+    await StaffExp.updateMany(
+      {
+        staffId: {
+          $in: staffsId,
+        },
+      },
+      {
+        $push: {
+          projectsId: projectRecord._id,
+        },
+      }
+    );
+
+    const response = handleResponse(200, '', '');
     return res.status(response.status).json(response);
   } catch (error) {
     if (error instanceof ErrorHandler) {
-      return res.status(error.status).json(error);
+      res.status(error.status);
     }
-    return res.json({ error: error.message });
-    // console.log(error.message);
-    // res.json({ error: error.message });
+    return res.json(error);
   }
 };
 

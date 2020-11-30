@@ -1,11 +1,11 @@
 import { Schema, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
+// import uniqueValidator from 'mongoose-unique-validator';
 
 const ProjectSchema = new Schema(
   {
     name: String,
     description: String,
-    projectCategoryId: Schema.Types.ObjectId,
+    projectCategoriesId: [Schema.Types.ObjectId],
     techsId: [Schema.Types.ObjectId],
     officesId: [Schema.Types.ObjectId],
     staffsId: [Schema.Types.ObjectId],
