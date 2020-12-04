@@ -2,11 +2,12 @@ import mongoose from 'mongoose';
 import { ErrorHandler, handleResponse } from '../helpers/response';
 import {
   Customer,
-  Office,
+  Department,
   Project,
   ProjectCategory,
   Staff,
-  Tech,
+  StaffExp,
+  TechStack,
 } from '../models';
 import len from '../services/arrayLength';
 export {
@@ -15,17 +16,17 @@ export {
   createProject,
   updateProject,
   deleteProject,
-  getProjectCategories,
-  getProjectCategoryDetail,
-  createProjectCategory,
-  updateProjectCategory,
-  deleteProjectCategory,
 };
 
 const getProjectList = async (req, res) => {
   try {
-    const projects = await Project.find({});
-    const response = handleResponse(200, '', '', { projects });
+    const record = await Project.find({});
+    const response = handleResponse(
+      200,
+      'Get data successfully',
+      'GET_DATA_SUCCESSFULLY',
+      { record }
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     res.status(error.status).json(error);
@@ -35,12 +36,16 @@ const getProjectList = async (req, res) => {
 const getProjectDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    const projectRecord = await Project.findById(id);
-
-    if (!projectRecord) {
-      throw new ErrorHandler(404, '', '');
+    const record = await Project.findOne({ _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Invalid', 'INVALID');
     }
-    const response = handleResponse(200, '', '', { project: projectRecord });
+    const response = handleResponse(
+      200,
+      'Get data successfully',
+      'GET_DATA_SUCCESSFULLY',
+      { record }
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     res.status(error.status).json(error);
@@ -50,109 +55,146 @@ const getProjectDetail = async (req, res) => {
 const createProject = async (req, res) => {
   try {
     const {
+      name,
       description,
-      techsId,
+      techStacksId,
       projectCategoriesId,
-      officesId,
+      departmentsId,
       staffsId,
       customersId,
       status,
     } = req.body;
 
-    const techsRecord = await Tech.find({
-      _id: {
-        $in: techsId,
+    const techStacksRecord = await TechStack.find(
+      {
+        _id: {
+          $in: techStacksId,
+        },
+        status: 'active',
       },
-      status: 'active',
-    });
+      'id'
+    );
 
-    if (len(techsRecord) < len(techsId)) {
-      throw new ErrorHandler(404, '', '');
+    if (len(techStacksRecord) < len(techStacksId)) {
+      throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
     }
 
-    const staffsRecord = await Staff.find({
-      _id: {
-        $in: staffsId,
+    const staffsRecord = await Staff.find(
+      {
+        _id: {
+          $in: staffsId,
+        },
       },
-    }).select({ _id: 1 });
+      'id'
+    );
 
     if (len(staffsRecord) < len(staffsId)) {
-      throw new ErrorHandler(400, '', '');
+      throw new ErrorHandler(400, 'Invalid staff', 'INVALID');
     }
 
-    const officesRecord = await Office.find({
-      _id: {
-        $in: officesId,
+    const departmentsRecord = await Department.find(
+      {
+        _id: {
+          $in: departmentsId,
+        },
       },
-    }).select({ _id: 1 });
+      'id'
+    );
 
-    if (len(officesRecord) < len(officesId)) {
+    if (len(departmentsRecord) < len(departmentsId)) {
+      throw new ErrorHandler(400, 'Invalid department', 'INVALID');
     }
 
-    const projectCategoriesRecord = await ProjectCategory.find({
-      _id: {
-        $in: projectCategoriesId,
+    const projectCategoriesRecord = await ProjectCategory.find(
+      {
+        _id: {
+          $in: projectCategoriesId,
+        },
+        status: 'active',
       },
-      status: 'active',
-    }).select({ _id: 1 });
+      'id'
+    );
 
-    if (len(projectCategoriesRecord) < len(officesId)) {
-      throw new ErrorHandler(400, '', '');
+    if (len(projectCategoriesRecord) < len(projectCategoriesId)) {
+      throw new ErrorHandler(400, 'Invalid project category', 'INVALID');
     }
 
-    // const customerRecord = await Customer.findById(customerId).select({
-    //   _id: 1,
-    // });
+    const customersRecord = await Customer.find(
+      {
+        _id: {
+          $in: customersId,
+        },
+        status: 'active',
+      },
+      'id'
+    );
 
-    // const techsRecord = await Tech.aggregate([
-    //   { $project: { status: 1 } },
-    //   {
-    //     $match: {
-    //       _id: {
-    //         $in: newData,
-    //       },
-    //     },
-    //   },
-    // ]);
+    if (len(customersRecord) < len(customersId)) {
+      throw new ErrorHandler(400, 'Invalid custormer', 'INVALID');
+    }
 
-    // const isActive = techsRecord.findIndex(
-    //   (item) => item.status === 'inactive'
-    // );
-
-    // console.log(staffsRecord);
-
-    // const officeRecord = Office.findById({ _id: officeId });
-
-    // const projectRecord = await Project.create({
-    //   description,
-    //   projectCategoryId,
-    //   techsId,
-    //   officeId,
-    //   staffIds,
-    // });
-    const response = handleResponse(200, '', '', techsRecord);
+    const projectId = mongoose.Types.ObjectId();
+    console.log(projectId);
+    await Promise.all([
+      Project.create({
+        _id: projectId,
+        name,
+        description,
+        techStacksId,
+        projectCategoriesId,
+        departmentsId,
+        staffsId,
+        customersId,
+        status,
+      }),
+      StaffExp.updateMany(
+        {
+          staffId: {
+            $in: staffsId,
+          },
+        },
+        {
+          $push: {
+            projectsId: projectId,
+          },
+        }
+      ),
+      Department.updateMany(
+        {
+          _id: {
+            $in: departmentsId,
+          },
+        },
+        {
+          $push: {
+            projectsId: projectId,
+          },
+        }
+      ),
+    ]);
+    const response = handleResponse(200, '', '');
     return res.status(response.status).json(response);
   } catch (error) {
     if (error instanceof ErrorHandler) {
       return res.status(error.status).json(error);
     }
-    return res.json({ error: error.message });
-    // console.log(error.message);
-    // res.json({ error: error.message });
+    return res.json(error);
   }
 };
 
 const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const projectRecord = await Project.findById(id);
-
+    const projectRecord = await Project.findOne({ _id: id }, 'id');
     if (!projectRecord) {
       throw new ErrorHandler(404, '', '');
     }
-
-    await Project.updateOne({ ...req.body });
-    const response = handleResponse(200, '', '');
+    await Project.updateOne({ _id: id }, { ...req.body });
+    const response = handleResponse(
+      200,
+      'Update data successfully',
+      'UPDATE_DATA_SUCCESSFULLY'
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     res.status(error.status).json(error);
@@ -162,62 +204,42 @@ const updateProject = async (req, res) => {
 const deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const projectRecord = await Project.findById(id);
-
-    if (!projectRecord) {
-      throw new ErrorHandler(404, '', '');
-    }
-    await Project.deleteOne({ id });
-    const response = handleResponse(200, '', '');
+    // const projectRecord = await Project.findOne({ _id: id });
+    // if (!projectRecord) {
+    //   throw new ErrorHandler(404, '', '');
+    // }
+    // await Project.deleteOne({ _id: id });
+    await Promise.all([
+      Project.deleteOne({ _id: id }),
+      StaffExp.updateMany(
+        {
+          projectsId: { $in: id },
+        },
+        {
+          $pull: {
+            projectsId: id,
+          },
+        }
+      ),
+      Department.updateMany(
+        {
+          projectsId: { $in: id },
+        },
+        {
+          $pull: {
+            projectsId: id,
+          },
+        }
+      ),
+    ]);
+    const response = handleResponse(
+      200,
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
+    );
     return res.status(response.status).json(response);
   } catch (error) {
+    console.log(error.message);
     res.status(error.status).json(error);
-  }
-};
-
-const getProjectCategories = async (req, res) => {
-  try {
-    const response = handleResponse(200, '', '');
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(error.status).json(error);
-  }
-};
-
-const getProjectCategoryDetail = async (req, res) => {
-  try {
-    const response = handleResponse(200, '', '');
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(error.status).json(error);
-  }
-};
-
-const createProjectCategory = async (req, res) => {
-  try {
-    const { name, description, priorityPoint, status } = req.body;
-    await ProjectCategory.create({ name, description, priorityPoint, status });
-    const response = handleResponse(200, '', '');
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(error.status).json(error);
-  }
-};
-
-const updateProjectCategory = async (req, res) => {
-  try {
-    const response = handleResponse(200, '', '');
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(error.status).json(error);
-  }
-};
-
-const deleteProjectCategory = async (req, res) => {
-  try {
-    const response = handleResponse(200, '', '');
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(error.status).json(error);
   }
 };

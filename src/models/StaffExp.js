@@ -3,16 +3,14 @@ import { Schema, model } from 'mongoose';
 const StaffExpSchema = new Schema(
   {
     staffId: Schema.Types.ObjectId,
-    exp: Date,
     skills: {
-      type: [{ techId: Schema.Types.ObjectId, exp: Date }],
-      default: [],
+      type: [{ techStackId: Schema.Types.ObjectId, exp: Date }],
     },
-    projectsId: { type: [Schema.Types.ObjectId], default: [] },
+    projectsId: [Schema.Types.ObjectId],
   },
   {
     timestamps: true,
   }
 );
 
-export default model('StaffExp', StaffExpSchema, 'staffsExperience');
+export default model('StaffExp', StaffExpSchema, 'staff-experiences');

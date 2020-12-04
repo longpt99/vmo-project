@@ -1,9 +1,19 @@
-import techRouter from '../routes/techRoute';
-// import authRouter from '../routes/authRoute';
-// import officeRouter from '../routes/officeRoute';
-import projectRouter from '../routes/projectRoute';
-import staffRouter from '../routes/staffRoute';
+import authRouter from '../routes/auth';
+import techStackRouter from '../routes/techStack';
+import departmentRouter from '../routes/department';
+import staffRouter from '../routes/staff';
+import projectCategoryRouter from '../routes/projectCategory';
+import projectRouter from '../routes/project';
+import customerRouter from '../routes/customer';
 
 export default (app) => {
-  app.use('/api', [techRouter, projectRouter, staffRouter]);
+  app.use('/api', [
+    authRouter,
+    departmentRouter,
+    techStackRouter,
+    projectRouter,
+    staffRouter,
+    projectCategoryRouter,
+    customerRouter,
+  ]);
 };

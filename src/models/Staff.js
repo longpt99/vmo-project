@@ -4,6 +4,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 const StaffSchema = new Schema(
   {
     name: String,
+    email: String,
     dob: Date,
     phoneNumber: String,
     address: String,

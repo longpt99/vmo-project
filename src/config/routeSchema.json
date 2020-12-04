@@ -1,0 +1,5 @@
+{
+  "POST": {
+    "/staffs": "/json/staffs/createStaff.json"
+  }
+}

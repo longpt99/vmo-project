@@ -16,5 +16,5 @@ const ProjectCategorySchema = new Schema(
 export default model(
   'ProjectCategory',
   ProjectCategorySchema,
-  'projectCategories'
+  'project-categories'
 );

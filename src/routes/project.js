@@ -5,8 +5,6 @@ import {
   getProjectList,
   updateProject,
   deleteProject,
-  getProjectCategories,
-  createProjectCategory,
 } from '../controllers/projectController';
 import { bearerToken } from '../middlewares';
 
@@ -18,13 +16,6 @@ router
   .route('/projects')
   .get(getProjectList)
   .post(createProject)
-  .put()
-  .delete();
-
-router
-  .route('/projects/categories')
-  .get(getProjectCategories)
-  .post(createProjectCategory)
   .put()
   .delete();
 

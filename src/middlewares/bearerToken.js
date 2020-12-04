@@ -15,10 +15,13 @@ export default async (req, res, next) => {
     if (authType !== 'Bearer') {
       throw new ErrorHandler(401, 'Expected a Bearer token', 'UNAUTHORIZATION');
     }
-    const user = verifyToken(token, process.env.JWT_SECRET_KEY);
+    const user = verifyToken(token, process.env.ACCESS_TOKEN_SECRET_KEY);
     req.user = user;
     return next();
   } catch (error) {
-    return res.status(error.status).json(error);
+    if (error instanceof ErrorHandler) {
+      res.status(error.status);
+    }
+    return res.json(error);
   }
 };

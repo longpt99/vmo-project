@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "dob": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "identityNumber": {
+      "type": "string"
+    },
+    "languages": {
+      "type": "array"
+    },
+    "certs": {
+      "type": "array"
+    },
+    "rolesId": {
+      "type": "array"
+    },
+    "projectsId": {
+      "type": "array"
+    },
+    "skills": {
+      "type": "array",
+      "properties": {
+        "techStackId": {
+          "type": "string"
+        },
+        "exp": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

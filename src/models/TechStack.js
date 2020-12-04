@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-const TechSchema = new Schema(
+const TechStackSchema = new Schema(
   {
     name: String,
     description: String,
@@ -12,4 +12,4 @@ const TechSchema = new Schema(
   }
 );
 
-export default model('Tech', TechSchema, 'techStacks');
+export default model('TechStack', TechStackSchema, 'tech-stacks');

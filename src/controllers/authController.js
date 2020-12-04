@@ -1,4 +1,5 @@
 import { ErrorHandler, handleResponse } from '../helpers/response';
+import { Account } from '../models';
 import { signToken } from '../services/tokenService';
 
 export { login, refreshToken };
@@ -6,7 +7,7 @@ export { login, refreshToken };
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const personal = findUser({ email });
+    const personal = await Account.findOne({ email });
     if (!personal) {
       throw new ErrorHandler(404, 'User not found', 'USER_NOT_FOUND');
     }
@@ -32,6 +33,7 @@ const login = async (req, res) => {
       'Login successfully',
       'LOGIN_SUCCESSFULLY',
       {
+        tokenType: 'Bearer',
         accessToken,
         refreshToken,
       }
@@ -46,15 +48,27 @@ const refreshToken = async (req, res) => {
   try {
     const { refreshToken } = res.locals;
     const accessToken = signToken(
-      { userId: refreshToken.userId },
+      { personalId: refreshToken.personalId },
       process.env.ACCESS_TOKEN_SECRET_KEY,
       process.env.ACCESS_TOKEN_EXPIRED_TIME
     );
-    res
-      .clearCookie('token')
-      .cookie('token', { accessToken, refreshToken }, { signed: true })
-      .json('Done');
+    const response = handleResponse(
+      200,
+      'Login successfully',
+      'LOGIN_SUCCESSFULLY',
+      {
+        tokenType: 'Bearer',
+        accessToken,
+        refreshToken,
+      }
+    );
+    return res.status(response.status).json(response);
   } catch (error) {
     return res.status(error.status).json(error);
   }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+  } catch (error) {}
 };

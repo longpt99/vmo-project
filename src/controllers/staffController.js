@@ -1,14 +1,18 @@
-import { response } from 'express';
 import mongoose from 'mongoose';
 import { ErrorHandler, handleResponse } from '../helpers/response';
 import { Account, Staff, StaffExp } from '../models';
 
-export { getStaffList, getStaffDetail, createStaff };
+export { getStaffList, getStaffDetail, createStaff, updateStaff, deleteStaff };
 
 const getStaffList = async (req, res) => {
   try {
-    const staffListRecord = await Staff.find({});
-    const response = handleResponse(200, '', '', staffListRecord);
+    const records = await Staff.find({});
+    const response = handleResponse(
+      200,
+      'Get data successfully',
+      'GET_DATA_SUCCESSFULLY',
+      { records }
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(error.status).json(error);
@@ -20,9 +24,14 @@ const getStaffDetail = async (req, res) => {
     const { id } = req.params;
     const staffRecord = await Staff.findOne({ _id: id });
     if (!staffRecord) {
-      throw new ErrorHandler(404, '', '');
+      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
     }
-    const response = handleResponse(200, '', '', staffRecord);
+    const response = handleResponse(
+      200,
+      'Get data successfully',
+      'GET_DATA_SUCCESSFULLY',
+      { staffRecord }
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(error.status).json(error);
@@ -41,15 +50,26 @@ const createStaff = async (req, res) => {
       address,
       languages,
       certs,
-      techsId,
+      techStacksId,
       projectsId,
     } = req.body;
-    console.log(dob);
+
+    const accountRecord = await Account.findOne({ email });
+
+    if (accountRecord) {
+      throw new ErrorHandler(
+        404,
+        'Email already exists',
+        'EMAIL_ALREADY_EXISTS'
+      );
+    }
     const staffId = mongoose.Types.ObjectId();
+
     await Promise.all([
       Account.create({ personalId: staffId, password, email }),
       Staff.create({
         _id: staffId,
+        email,
         dob,
         name,
         languages,
@@ -58,9 +78,13 @@ const createStaff = async (req, res) => {
         phoneNumber,
         address,
       }),
-      StaffExp.create({ staffId, techsId, projectsId }),
+      StaffExp.create({ staffId, techStacksId, projectsId }),
     ]);
-    const response = handleResponse(200, '', '');
+    const response = handleResponse(
+      200,
+      'Create data successfully',
+      'CREATE_DATA_SUCCESSFULLY'
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(error.status).json(error);
@@ -70,9 +94,28 @@ const createStaff = async (req, res) => {
 const updateStaff = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = handleResponse(200, '', '');
+    const staffRecord = await Staff.findOne({ _id: id }, 'id');
+    if (!staffRecord) {
+      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
+    }
+    await Staff.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          ...req.body,
+        },
+      }
+    );
+    const response = handleResponse(
+      200,
+      'Update data successfully',
+      'UPDATE_DATA_SUCCESSFULLY'
+    );
     return res.status(response.status).json(response);
   } catch (error) {
+    console.log(error.message);
     return res.status(error.status).json(error);
   }
 };
@@ -80,7 +123,16 @@ const updateStaff = async (req, res) => {
 const deleteStaff = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = handleResponse(200, '', '');
+    const staffRecord = await Staff.findOne({ _id: id }, 'id');
+    if (!staffRecord) {
+      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
+    }
+    await Staff.deleteOne({ _id: id });
+    const response = handleResponse(
+      200,
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(error.status).json(error);
