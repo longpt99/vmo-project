@@ -5,12 +5,12 @@ import {
   getProjectList,
   updateProject,
   deleteProject,
-} from '../controllers/projectController';
+} from '../controllers/project.controller';
 import { bearerToken } from '../middlewares';
 
 const router = express.Router();
 
-// router.use(bearerToken);
+router.use(bearerToken);
 
 router
   .route('/projects')

@@ -1,93 +1,40 @@
 import mongoose from 'mongoose';
 import { ErrorHandler, handleResponse } from '../helpers/response';
 import { Account, Staff, StaffExp } from '../models';
-
+import {
+  createStaffService,
+  deleteStaffService,
+  getStaffService,
+  getStaffsService,
+  updateStaffService,
+} from '../services/staff.service';
 export { getStaffList, getStaffDetail, createStaff, updateStaff, deleteStaff };
 
 const getStaffList = async (req, res) => {
   try {
-    const records = await Staff.find({});
-    const response = handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { records }
-    );
+    const response = await getStaffsService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 const getStaffDetail = async (req, res) => {
   try {
     const { id } = req.params;
-    const staffRecord = await Staff.findOne({ _id: id });
-    if (!staffRecord) {
-      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
-    }
-    const response = handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { staffRecord }
-    );
+    const response = await getStaffService(id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 const createStaff = async (req, res) => {
   try {
-    const {
-      email,
-      password,
-      name,
-      dob,
-      identityNumber,
-      phoneNumber,
-      address,
-      languages,
-      certs,
-      techStacksId,
-      projectsId,
-    } = req.body;
-
-    const accountRecord = await Account.findOne({ email });
-
-    if (accountRecord) {
-      throw new ErrorHandler(
-        404,
-        'Email already exists',
-        'EMAIL_ALREADY_EXISTS'
-      );
-    }
-    const staffId = mongoose.Types.ObjectId();
-
-    await Promise.all([
-      Account.create({ personalId: staffId, password, email }),
-      Staff.create({
-        _id: staffId,
-        email,
-        dob,
-        name,
-        languages,
-        certs,
-        identityNumber,
-        phoneNumber,
-        address,
-      }),
-      StaffExp.create({ staffId, techStacksId, projectsId }),
-    ]);
-    const response = handleResponse(
-      200,
-      'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
-    );
+    const response = await createStaffService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 

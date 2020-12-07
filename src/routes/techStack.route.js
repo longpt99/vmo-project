@@ -5,7 +5,7 @@ import {
   getTechStackList,
   updateTechStack,
   getTechStackDetail,
-} from '../controllers/techStackController';
+} from '../controllers/techStack.controller';
 import { bearerToken } from '../middlewares';
 
 const router = express.Router();

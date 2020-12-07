@@ -21,6 +21,8 @@ export default async (req, res, next) => {
   } catch (error) {
     if (error instanceof ErrorHandler) {
       res.status(error.status);
+    } else {
+      res.status(500);
     }
     return res.json(error);
   }

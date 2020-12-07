@@ -5,7 +5,7 @@ import {
   getStaffDetail,
   getStaffList,
   updateStaff,
-} from '../controllers/staffController';
+} from '../controllers/staff.controller';
 import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();

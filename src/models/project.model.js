@@ -5,7 +5,7 @@ const ProjectSchema = new Schema(
   {
     name: String,
     description: String,
-    projectCategoryId: Schema.Types.ObjectId,
+    projectTypeId: Schema.Types.ObjectId,
     techStacksId: [Schema.Types.ObjectId],
     departmentsId: [Schema.Types.ObjectId],
     staffsId: [Schema.Types.ObjectId],

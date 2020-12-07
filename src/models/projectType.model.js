@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-const ProjectCategorySchema = new Schema(
+const ProjectTypeSchema = new Schema(
   {
     name: String,
     description: String,
@@ -13,8 +13,4 @@ const ProjectCategorySchema = new Schema(
   }
 );
 
-export default model(
-  'ProjectCategory',
-  ProjectCategorySchema,
-  'project-categories'
-);
+export default model('ProjectType', ProjectTypeSchema, 'project-types');
