@@ -5,7 +5,7 @@ const findOne = async (model, filter, projection = '') => {
   try {
     const record = await model.findOne(filter, projection);
     if (!record) {
-      throw new ErrorHandler(404, 'User not exists', 'INVALID');
+      throw new ErrorHandler(404, `${model.modelName} not exists`, 'INVALID');
     }
     return record;
   } catch (error) {

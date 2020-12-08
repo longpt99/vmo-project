@@ -5,12 +5,12 @@ const ProjectSchema = new Schema(
   {
     name: String,
     description: String,
-    projectTypeId: Schema.Types.ObjectId,
+    projectTypesId: [Schema.Types.ObjectId],
     techStacksId: [Schema.Types.ObjectId],
     departmentsId: [Schema.Types.ObjectId],
     staffsId: [Schema.Types.ObjectId],
-    customerId: Schema.Types.ObjectId,
-    status: String,
+    customersId: [Schema.Types.ObjectId],
+    projectStatusId: Schema.Types.ObjectId,
   },
   {
     timestamps: true,

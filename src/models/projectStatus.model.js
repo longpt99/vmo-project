@@ -5,7 +5,6 @@ const ProjectStatusSchema = new Schema(
   {
     name: String,
     description: String,
-    priorityPoint: Number,
     status: String,
   },
   {

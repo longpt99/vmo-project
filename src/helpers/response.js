@@ -1,3 +1,4 @@
+import logger from './logger';
 export { ErrorHandler, handleResponse, handleError };
 
 class ErrorHandler extends Error {
@@ -10,6 +11,7 @@ class ErrorHandler extends Error {
 }
 
 const handleError = (error) => {
+  logger(error);
   if (error instanceof ErrorHandler) {
     return error;
   }

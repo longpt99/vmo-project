@@ -1,6 +1,12 @@
-import { handleError } from '../helpers/response';
+import { handleError, handleResponse } from '../helpers/response';
 import { ProjectStatus } from '../models';
-import { findOne, findMany, updateOne, deleteOne } from './commonQuery.service';
+import {
+  findOne,
+  findMany,
+  updateOne,
+  deleteOne,
+  insertOne,
+} from './commonQuery.service';
 
 export {
   getProjectStatusesService,
@@ -38,8 +44,14 @@ const getProjectStatusService = async (id) => {
   }
 };
 
-const createProjectStatusService = async () => {
+const createProjectStatusService = async (payload) => {
   try {
+    await insertOne(ProjectStatus, payload);
+    return handleResponse(
+      200,
+      'Create data successfully',
+      'CREATE_DATA_SUCCESSFULLY'
+    );
   } catch (error) {
     return handleError(error);
   }

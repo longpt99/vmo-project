@@ -36,10 +36,11 @@ const loginService = async (data) => {
   }
 };
 
-const refreshTokenService = (refreshToken) => {
+const refreshTokenService = (refreshToken, payload) => {
   try {
+    console.log(refreshToken);
     const accessToken = signToken(
-      { personalId: refreshToken.personalId },
+      { payload },
       process.env.ACCESS_TOKEN_SECRET_KEY,
       process.env.ACCESS_TOKEN_EXPIRED_TIME
     );

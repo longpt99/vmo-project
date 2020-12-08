@@ -11,10 +11,12 @@ const login = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 const refreshToken = async (req, res) => {
   try {
-    const response = await refreshTokenService(res.locals.refreshToken);
+    const response = await refreshTokenService(
+      req.body.refreshToken,
+      res.locals.personalId
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(500).json({ error: error.message });

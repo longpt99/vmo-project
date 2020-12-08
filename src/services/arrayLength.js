@@ -1,1 +1,1 @@
-export default (arr) => arr.length;
+export default (arr = []) => arr.length;

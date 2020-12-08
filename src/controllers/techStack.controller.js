@@ -1,5 +1,10 @@
-import { handleResponse } from '../helpers/response';
-import { TechStack } from '../models';
+import { createStaffService } from '../services/staff.service';
+import {
+  deleteTechStackService,
+  getTechStackService,
+  getTechStacksService,
+  updateTechStackService,
+} from '../services/techStack.service';
 
 export {
   getTechStackList,
@@ -11,95 +16,42 @@ export {
 
 const getTechStackList = async (req, res) => {
   try {
-    const records = await TechStack.find({});
-    const response = handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { records }
-    );
+    const response = await getTechStacksService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 const getTechStackDetail = async (req, res) => {
   try {
-    const { id } = req.params;
-    const techRecord = await TechStack.findOne({ _id: id });
-
-    if (!techRecord) {
-      throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
-    }
-    const response = handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { record: techRecord }
-    );
+    const response = await getTechStackService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 const createTechStack = async (req, res) => {
   try {
-    const { name, description, status } = req.body;
-    const TechStackRecord = await TechStack.create({
-      name,
-      description,
-      status,
-    });
-    const response = handleResponse(
-      200,
-      'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY',
-      TechStackRecord
-    );
+    const response = await createStaffService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 const updateTechStack = async (req, res) => {
   try {
-    const { id } = req.params;
-    const techRecord = await TechStack.findOne({ _id: id }, 'id');
-    if (!techRecord) {
-      throw new ErrorHandler(404, 'Tech not exists', 'INVALID');
-    }
-    await TechStack.updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          ...req.body,
-        },
-      }
-    );
-    const response = handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    const response = await updateTechStackService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 const deleteTechStack = async (req, res) => {
   try {
-    const { id } = req.params;
-    await TechStack.findByIdAndDelete(id);
-    const response = handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    const response = await deleteTechStackService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(error.status).json(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 

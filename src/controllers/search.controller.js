@@ -1,6 +1,3 @@
-import { model } from 'mongoose';
-import { handleError, handleResponse } from '../helpers/response';
-import capitalizeFirstLetter from '../services/capitalizeFirstLetter';
 import { getSearchResult } from '../services/search.service';
 
 export { getSearch };

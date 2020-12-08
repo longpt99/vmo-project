@@ -1,9 +1,11 @@
-import { ErrorHandler, handleError } from '../helpers/response';
+import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
 import {
   Customer,
   Department,
   Project,
+  ProjectStatus,
   ProjectType,
+  Staff,
   StaffExp,
   TechStack,
 } from '../models';
@@ -13,8 +15,10 @@ import {
   updateOne,
   updateMany,
   deleteOne,
+  insertOne,
 } from './commonQuery.service';
 import len from '../services/arrayLength';
+import mongoose from 'mongoose';
 
 export {
   getProjectsService,
@@ -60,11 +64,11 @@ const createProjectService = async (payload) => {
       techStacksId,
       projectTypesId,
       departmentsId,
+      projectStatusId,
       staffsId,
       customersId,
-      status,
     } = payload;
-    const techStacksRecord = await findMany(
+    const techStacksAsync = findMany(
       TechStack,
       {
         _id: {
@@ -74,10 +78,8 @@ const createProjectService = async (payload) => {
       },
       'id'
     );
-    if (len(techStacksRecord) < len(techStacksId)) {
-      throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
-    }
-    const staffsRecord = await findMany(
+
+    const staffsAsync = findMany(
       Staff,
       {
         _id: {
@@ -87,11 +89,7 @@ const createProjectService = async (payload) => {
       'id'
     );
 
-    if (len(staffsRecord) < len(staffsId)) {
-      throw new ErrorHandler(400, 'Invalid staff', 'INVALID');
-    }
-
-    const departmentsRecord = await findMany(
+    const departmentsAsync = findMany(
       Department,
       {
         _id: {
@@ -101,11 +99,7 @@ const createProjectService = async (payload) => {
       'id'
     );
 
-    if (len(departmentsRecord) < len(departmentsId)) {
-      throw new ErrorHandler(400, 'Invalid department', 'INVALID');
-    }
-
-    const projectTypesRecord = await findMany(
+    const projectTypesAsync = findMany(
       ProjectType,
       {
         _id: {
@@ -116,11 +110,7 @@ const createProjectService = async (payload) => {
       'id'
     );
 
-    if (len(projectTypesRecord) < len(projectTypesId)) {
-      throw new ErrorHandler(400, 'Invalid project Type', 'INVALID');
-    }
-
-    const customersRecord = await findMany(
+    const customersAsync = findMany(
       Customer,
       {
         _id: {
@@ -131,9 +121,35 @@ const createProjectService = async (payload) => {
       'id'
     );
 
+    const techStacksRecord = await techStacksAsync;
+    if (len(techStacksRecord) < len(techStacksId)) {
+      throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
+    }
+
+    const staffsRecord = await staffsAsync;
+    if (len(staffsRecord) < len(staffsId)) {
+      throw new ErrorHandler(400, 'Invalid staff', 'INVALID');
+    }
+
+    const departmentsRecord = await departmentsAsync;
+    if (len(departmentsRecord) < len(departmentsId)) {
+      throw new ErrorHandler(400, 'Invalid department', 'INVALID');
+    }
+
+    const projectTypesRecord = await projectTypesAsync;
+    if (len(projectTypesRecord) < len(projectTypesId)) {
+      throw new ErrorHandler(400, 'Invalid project Type', 'INVALID');
+    }
+
+    const customersRecord = await customersAsync;
     if (len(customersRecord) < len(customersId)) {
       throw new ErrorHandler(400, 'Invalid customer', 'INVALID');
     }
+
+    await findOne(ProjectStatus, {
+      _id: projectStatusId,
+      status: 'active',
+    });
     const projectId = mongoose.Types.ObjectId();
     await Promise.all([
       insertOne(Project, {
@@ -145,7 +161,7 @@ const createProjectService = async (payload) => {
         departmentsId,
         staffsId,
         customersId,
-        status,
+        projectStatusId,
       }),
       updateMany(
         StaffExp,
@@ -245,8 +261,8 @@ const deleteProjectService = async (id) => {
     ]);
     return handleResponse(
       200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
     return handleError(error);
