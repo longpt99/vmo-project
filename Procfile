@@ -1,1 +1,1 @@
-web: webpack --config webpack.prod.js
+web: babel-node server.js
