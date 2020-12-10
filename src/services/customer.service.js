@@ -1,6 +1,13 @@
-import { handleError, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
 import { Customer } from '../models';
-import { deleteOne, findMany, findOne, updateOne } from './commonQuery.service';
+import {
+  deleteOne,
+  findMany,
+  findOne,
+  insert,
+  updateOne,
+  updateMany,
+} from './commonQuery.service';
 
 export {
   getCustomersService,
@@ -27,6 +34,9 @@ const getCustomersService = async () => {
 const getCustomerService = async (id) => {
   try {
     const record = await findOne(Customer, { _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
+    }
     return handleResponse(
       200,
       'Get data successfully',
@@ -40,7 +50,12 @@ const getCustomerService = async (id) => {
 
 const createCustomerService = async (payload) => {
   try {
-    await insertOne(Customer, payload);
+    const { name } = payload;
+    const record = await findOne(Customer, { name }, 'id');
+    if (record) {
+      throw new ErrorHandler(404, 'Customer already exists', 'INVALID');
+    }
+    await insert(Customer, payload);
     return handleResponse(
       200,
       'Create data successfully',
@@ -53,7 +68,10 @@ const createCustomerService = async (payload) => {
 
 const updateCustomerService = async (id, payload) => {
   try {
-    await findOne(Customer, { _id: id });
+    const record = await findOne(Customer, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
+    }
     await updateOne(Customer, { _id: id }, { $set: payload });
     return handleResponse(
       200,
@@ -67,12 +85,15 @@ const updateCustomerService = async (id, payload) => {
 
 const deleteCustomerService = async (id) => {
   try {
-    await findOne(Customer, { _id: id });
+    const record = await findOne(Customer, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
+    }
     await deleteOne(Customer, { _id: id });
     return handleResponse(
       200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
     return handleError(error);

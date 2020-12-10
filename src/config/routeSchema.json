@@ -1,5 +1,22 @@
 {
   "POST": {
-    "/staffs": "/json/staffs/createStaff.json"
+    "/staffs": "/json/staffs/createStaff.json",
+    "/departments": "/json/departments/createDepartment.json",
+    "/customers": "/json/customers/createCustomer.json",
+    "/tech-stacks": "/json/techStacks/createTechStack.json",
+    "/projects": "/json/projects/createProject.json",
+    "/project-types": "/json/projectTypes/createProjectType.json",
+    "/project-statuses": "/json/project-statuses/createProjectStatus.json",
+    "/auth/refresh-token": "/json/staffs/refreshToken.json",
+    "/auth/login": "/json/auth/login.json"
+  },
+  "PUT": {
+    "/staffs/:id": "/json/staffs/updateStaff.json",
+    "/departments/:id": "/json/departments/updateDepartment.json",
+    "/customers/:id": "/json/customers/updateCustomer.json",
+    "/tech-stacks/:id": "/json/techStacks/updateTechStack.json",
+    "/projects/:id": "/json/projects/updateProject.json",
+    "/project-types/:id": "/json/projectTypes/updateProjectType.json",
+    "/project-statuses/:id": "/json/project-statuses/updateProjectStatus.json"
   }
 }

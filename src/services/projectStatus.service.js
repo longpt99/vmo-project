@@ -1,11 +1,11 @@
-import { handleError, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
 import { ProjectStatus } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
-  insertOne,
+  insert,
 } from './commonQuery.service';
 
 export {
@@ -46,7 +46,12 @@ const getProjectStatusService = async (id) => {
 
 const createProjectStatusService = async (payload) => {
   try {
-    await insertOne(ProjectStatus, payload);
+    const { name } = payload;
+    const record = await findOne(ProjectStatus, { name }, 'id');
+    if (record) {
+      throw new ErrorHandler(404, 'Project status already exists', 'INVALID');
+    }
+    await insert(ProjectStatus, payload);
     return handleResponse(
       200,
       'Create data successfully',
@@ -59,7 +64,10 @@ const createProjectStatusService = async (payload) => {
 
 const updateProjectStatusService = async (id, payload) => {
   try {
-    await findOne(ProjectStatus, { _id: id });
+    const record = await findOne(ProjectStatus, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
+    }
     await updateOne(ProjectStatus, { _id: id }, { $set: payload });
     return handleResponse(
       200,
@@ -73,12 +81,15 @@ const updateProjectStatusService = async (id, payload) => {
 
 const deleteProjectStatusService = async (id) => {
   try {
-    await findOne(ProjectStatus, { _id: id });
+    const record = await findOne(ProjectStatus, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
+    }
     await deleteOne(ProjectStatus, { _id: id });
     return handleResponse(
       200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
     return handleError(error);

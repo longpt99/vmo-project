@@ -1,11 +1,11 @@
-import { ErrorHandler, handleError } from '../helpers/response';
+import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
 import { TechStack } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
-  insertOne,
+  insert,
 } from './commonQuery.service';
 
 export {
@@ -51,7 +51,7 @@ const createTechStackService = async (payload) => {
     if (record) {
       throw new ErrorHandler(404, 'Tech stack already exists', 'INVALID');
     }
-    await insertOne(TechStack, req.body);
+    await insert(TechStack, payload);
     return handleResponse(
       200,
       'Create data successfully',
@@ -64,7 +64,10 @@ const createTechStackService = async (payload) => {
 
 const updateTechStackService = async (id, payload) => {
   try {
-    await findOne(TechStack, { _id: id });
+    const record = await findOne(TechStack, { _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
+    }
     await updateOne(
       TechStack,
       {
@@ -88,7 +91,10 @@ const updateTechStackService = async (id, payload) => {
 
 const deleteTechStackService = async (id) => {
   try {
-    await findOne(TechStack, { _id: id });
+    const record = await findOne(TechStack, { _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
+    }
     await deleteOne(TechStack, { _id: id });
     return handleResponse(
       200,

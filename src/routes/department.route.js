@@ -11,7 +11,8 @@ import {
 
 const router = express.Router();
 
-// router.use('/departments', bearerToken);
+router.use('/departments', bearerToken);
+
 router.route('/departments').get(getDepartmentList).post(createDepartment);
 
 router

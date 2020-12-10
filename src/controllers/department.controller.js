@@ -3,6 +3,7 @@ import {
   getDepartmentsService,
   updateDepartmentService,
   deleteDepartmentService,
+  createDepartmentService,
 } from '../services/department.service';
 
 export {

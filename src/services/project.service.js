@@ -15,7 +15,7 @@ import {
   updateOne,
   updateMany,
   deleteOne,
-  insertOne,
+  insert,
 } from './commonQuery.service';
 import len from '../services/arrayLength';
 import mongoose from 'mongoose';
@@ -152,7 +152,7 @@ const createProjectService = async (payload) => {
     });
     const projectId = mongoose.Types.ObjectId();
     await Promise.all([
-      insertOne(Project, {
+      insert(Project, {
         _id: projectId,
         name,
         description,

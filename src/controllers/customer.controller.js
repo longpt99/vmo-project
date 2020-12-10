@@ -60,70 +60,70 @@ const deleteCustomer = async (req, res) => {
 };
 
 // const customers = [
-//   {
-//     name: 'vmo holdings',
-//     description: 'vmo holdings',
-//     priorityNumber: 4,
-//     status: 'active',
-//   },
-//   {
-//     name: 'vng',
-//     description: 'vng',
-//     priorityNumber: 3,
-//     status: 'active',
-//   },
-//   {
-//     name: 'fpt',
-//     description: 'fpt',
-//     priorityNumber: 5,
-//     status: 'active',
-//   },
-//   {
-//     name: 'mol logistics',
-//     description: 'mol logistics',
-//     priorityNumber: 2,
-//     status: 'active',
-//   },
-//   {
-//     name: 'dingtea',
-//     description: 'dingtea',
-//     priorityNumber: 2,
-//     status: 'inactive',
-//   },
-//   {
-//     name: 'medlatec',
-//     description: 'medlatec',
-//     priorityNumber: 5,
-//     status: 'active',
-//   },
-//   {
-//     name: 'tocotoco',
-//     description: 'tocotoco',
-//     priorityNumber: 4,
-//     status: 'inactive',
-//   },
-//   {
-//     name: 'viettel',
-//     description: 'viettel',
-//     priorityNumber: 2,
-//     status: 'active',
-//   },
-//   {
-//     name: 'vnpt',
-//     description: 'vnpt',
-//     priorityNumber: 1,
-//     status: 'inactive',
-//   },
-//   {
-//     name: 'neon studio',
-//     description: 'neon studio',
-//     priorityNumber: 3,
-//     status: 'inactive',
-//   },
-//   {
-//     name: 'misa',
-//     description: 'misa',
-//     priorityNumber: 2,
-//     status: 'inactive',
-//   },
+// {
+//   name: 'vmo holdings',
+//   description: 'vmo holdings',
+//   priorityNumber: 4,
+//   status: 'active',
+// },
+// {
+//   name: 'vng',
+//   description: 'vng',
+//   priorityNumber: 3,
+//   status: 'active',
+// },
+// {
+//   name: 'fpt',
+//   description: 'fpt',
+//   priorityNumber: 5,
+//   status: 'active',
+// },
+// {
+//   name: 'mol logistics',
+//   description: 'mol logistics',
+//   priorityNumber: 2,
+//   status: 'active',
+// },
+// {
+//   name: 'dingtea',
+//   description: 'dingtea',
+//   priorityNumber: 2,
+//   status: 'inactive',
+// },
+// {
+//   name: 'medlatec',
+//   description: 'medlatec',
+//   priorityNumber: 5,
+//   status: 'active',
+// },
+// {
+//   name: 'tocotoco',
+//   description: 'tocotoco',
+//   priorityNumber: 4,
+//   status: 'inactive',
+// },
+// {
+//   name: 'viettel',
+//   description: 'viettel',
+//   priorityNumber: 2,
+//   status: 'active',
+// },
+// {
+//   name: 'vnpt',
+//   description: 'vnpt',
+//   priorityNumber: 1,
+//   status: 'inactive',
+// },
+// {
+//   name: 'neon studio',
+//   description: 'neon studio',
+//   priorityNumber: 3,
+//   status: 'inactive',
+// },
+// {
+//   name: 'misa',
+//   description: 'misa',
+//   priorityNumber: 2,
+//   status: 'inactive',
+// },
 // ];

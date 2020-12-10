@@ -10,7 +10,7 @@ import { bearerToken } from '../middlewares';
 
 const router = express.Router();
 
-router.use(bearerToken);
+router.use('/projects', bearerToken);
 
 router
   .route('/projects')

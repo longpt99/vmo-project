@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.use('/staffs', bearerToken);
 
-router.route('/staffs').get(getStaffList).post(verifyRequest, createStaff);
+router.route('/staffs').get(getStaffList).post(createStaff);
 
 router
   .route('/staffs/:id')

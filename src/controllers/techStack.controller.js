@@ -1,5 +1,5 @@
-import { createStaffService } from '../services/staff.service';
 import {
+  createTechStackService,
   deleteTechStackService,
   getTechStackService,
   getTechStacksService,
@@ -32,7 +32,7 @@ const getTechStackDetail = async (req, res) => {
 };
 const createTechStack = async (req, res) => {
   try {
-    const response = await createStaffService(req.body);
+    const response = await createTechStackService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
     return res.status(500).json({ error: error.message });

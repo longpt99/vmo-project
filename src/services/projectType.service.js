@@ -1,6 +1,12 @@
-import { handleError, handleResponse } from '../helpers/response';
+import { handleError, handleResponse, ErrorHandler } from '../helpers/response';
 import { ProjectType } from '../models';
-import { findOne, findMany, updateOne, deleteOne } from './commonQuery.service';
+import {
+  findOne,
+  findMany,
+  updateOne,
+  deleteOne,
+  insert,
+} from './commonQuery.service';
 
 export {
   getProjectTypesService,
@@ -43,8 +49,12 @@ const getProjectTypeService = async (id) => {
 
 const createProjectTypeService = async (payload) => {
   try {
-    const { name, description, priorityPoint, status } = payload;
-    await createOne(ProjectType, { name, description, priorityPoint, status });
+    const { name } = payload;
+    const record = await findOne(ProjectType, { name }, 'id');
+    if (record) {
+      throw new ErrorHandler(404, 'Project type already exists', 'INVALID');
+    }
+    await insert(ProjectType, payload);
     return handleResponse(
       200,
       'Create data successfully',
@@ -57,18 +67,11 @@ const createProjectTypeService = async (payload) => {
 
 const updateProjectTypeService = async (id, payload) => {
   try {
-    await findOne(ProjectType, { _id: id }, 'id');
-    await updateOne(
-      ProjectType,
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          ...payload,
-        },
-      }
-    );
+    const record = await findOne(ProjectType, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
+    }
+    await updateOne(ProjectType, { _id: id }, { $set: payload });
     return handleResponse(
       200,
       'Update data successfully',
@@ -81,12 +84,15 @@ const updateProjectTypeService = async (id, payload) => {
 
 const deleteProjectTypeService = async (id) => {
   try {
-    await findOne(ProjectType, { _id: id }, 'id');
+    const record = await findOne(ProjectType, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
+    }
     await deleteOne(ProjectType, { _id: id });
     return handleResponse(
       200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
     return handleError(error);

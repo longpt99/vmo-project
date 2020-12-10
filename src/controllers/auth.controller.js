@@ -1,9 +1,8 @@
 import { loginService, refreshTokenService } from '../services/auth.service';
-import { signToken } from '../services/tokenService';
-
 export { login, refreshToken };
 
 const login = async (req, res) => {
+  // console.log(err);
   try {
     const response = await loginService(req.body);
     return res.status(response.status).json(response);

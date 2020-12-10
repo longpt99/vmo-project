@@ -61,45 +61,38 @@ const deleteProjectStatus = async (req, res) => {
 
 // const Types = [
 //   {
-//     name: 'banking and finance',
-//     description: 'banking and finance',
-//     priorityPoint: 5,
+//     name: 'open',
+//     description: 'open',
 //     status: 'active',
 //   },
+
 //   {
-//     name: 'education',
-//     description: 'education',
-//     priorityPoint: 3,
+//     name: 'urgent',
+//     description: 'urgent',
 //     status: 'active',
 //   },
+
 //   {
-//     name: 'medical',
-//     description: 'medical',
-//     priorityPoint: 4,
+//     name: 'in progress',
+//     description: 'in progress',
 //     status: 'active',
 //   },
+
 //   {
-//     name: 'ecommerce',
-//     description: 'ecommerce',
-//     priorityPoint: 5,
+//     name: 'in review',
+//     description: 'in review',
 //     status: 'active',
 //   },
+
 //   {
-//     name: 'media',
-//     description: 'media',
-//     priorityPoint: 3,
-//     status: 'inactive',
+//     name: 'resolved',
+//     description: 'recolved',
+//     status: 'active',
 //   },
+
 //   {
-//     name: 'machine learning',
-//     description: 'machine learning',
-//     priorityPoint: 5,
-//     status: 'inactive',
-//   },
-//   {
-//     name: 'construction',
-//     description: 'construction',
-//     priorityPoint: 2,
-//     status: 'inactive',
+//     name: 'closed',
+//     description: 'closed',
+//     status: 'active',
 //   },
 // ];

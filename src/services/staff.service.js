@@ -1,12 +1,13 @@
-import { handleError } from '../helpers/response';
+import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
 import { Account, Staff, StaffExp } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
-  insertOne,
+  insert,
 } from './commonQuery.service';
+import { Types } from 'mongoose';
 
 export {
   getStaffsService,
@@ -59,11 +60,14 @@ const createStaffService = async (payload) => {
       techStacksId,
       projectsId,
     } = payload;
-    await findOne(Account, { email });
-    const staffId = mongoose.Types.ObjectId();
+    const accountRecord = await findOne(Account, { email });
+    if (accountRecord) {
+      throw new ErrorHandler(404, `Account already exists`, 'INVALID');
+    }
+    const staffId = Types.ObjectId();
     await Promise.all([
-      insertOne(Account, { personalId: staffId, password, email }),
-      insertOne(Staff, {
+      insert(Account, { personalId: staffId, password, email }),
+      insert(Staff, {
         _id: staffId,
         email,
         dob,
@@ -74,7 +78,7 @@ const createStaffService = async (payload) => {
         phoneNumber,
         address,
       }),
-      insertOne(StaffExp, { staffId, techStacksId, projectsId }),
+      insert(StaffExp, { staffId, techStacksId, projectsId }),
     ]);
     return handleResponse(
       200,
@@ -123,3 +127,119 @@ const deleteStaffService = async (id) => {
     return handleError(error);
   }
 };
+
+// const staffs = [
+// {
+//   email: "long@gmail.com",
+//   password: "long123",
+//   name: "Long",
+//   phoneNumber: "0987654321",
+//   address: "012345678",
+// },
+
+//   {
+//     email: 'tuan@gmail.com',
+//     password: 'long123',
+//     name: 'Nguyen Anh Tuan',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'dung@gmail.com',
+//     password: 'long123',
+//     name: 'Vu Quang Dung',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'thu@gmail.com',
+//     password: 'long123',
+//     name: 'Duong Minh Thu',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'tien@gmail.com',
+//     password: 'long123',
+//     name: 'Nguyen Dam Tien',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'hiep@gmail.com',
+//     password: 'long123',
+//     name: 'Pham Quang Hiep',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     address: null,
+//     email: 'rom@gmail.com',
+//     password: 'long123',
+//     name: 'Ngo Thanh Thuy',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'giang@gmail.com',
+//     password: 'long123',
+//     name: 'Nguyen Quynh Giang',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'long.phuong@gmail.com',
+//     password: 'long123',
+//     name: 'Phuong Thanh Long',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'thuy.ngo@gmail.com',
+//     password: 'long123',
+//     name: 'Ngo Thanh Thuy',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'hiep.pham@gmail.com',
+//     password: 'long123',
+//     name: 'Pham Quang Hiep',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'tien.nguyen@gmail.com',
+//     password: 'long123',
+//     name: 'Nguyen Dam Tien',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'thu.duong@gmail.com',
+//     password: 'long123',
+//     name: 'Duong Minh Thu',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'dung.vu@gmail.com',
+//     password: 'long123',
+//     name: 'Vu Quang Dung',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'tuan.nguyen@gmail.com',
+//     password: 'long123',
+//     name: 'Nguyen Anh Tuan',
+//     phoneNumber: '0123456789',
+//   },
+
+//   {
+//     email: 'admin01@gmail.com',
+//     password: 'long123',
+//     name: 'Administrater',
+//     phoneNumber: '0123456789',
+//   },
+// ];
