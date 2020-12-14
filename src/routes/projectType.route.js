@@ -10,15 +10,15 @@ import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
-router.use('/project-Types', bearerToken);
+router.use('/project-types', bearerToken);
 
 router
-  .route('/project-Types')
+  .route('/project-types')
   .get(getProjectTypes)
   .post(verifyRequest, createProjectType);
 
 router
-  .route('/project-Types/:id')
+  .route('/project-types/:id')
   .get(getProjectTypeDetail)
   .put(verifyRequest, updateProjectType)
   .delete(deleteProjectType);
