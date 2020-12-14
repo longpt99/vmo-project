@@ -1,4 +1,4 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleResponse } from '../helpers/response';
 import { Department, Project, Staff, TechStack } from '../models';
 import {
   findOne,
@@ -6,6 +6,7 @@ import {
   updateOne,
   deleteOne,
   insert,
+  updateMany,
 } from './commonQuery.service';
 
 import len from './arrayLength';
@@ -28,13 +29,18 @@ const getDepartmentsService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const getDepartmentService = async (id) => {
   try {
-    const record = await findOne(Department, { _id: id });
+    const populate = [
+      { path: 'techStacksId', select: 'name status' },
+      { path: 'projectsId', select: 'name' },
+      { path: 'staffsId', select: 'name' },
+    ];
+    const record = await findOne(Department, { _id: id }, '', populate);
     if (!record) {
       throw new ErrorHandler(404, 'Department not exists', 'INVALID');
     }
@@ -45,13 +51,20 @@ const getDepartmentService = async (id) => {
       { record }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const createDepartmentService = async (payload) => {
   try {
-    const { name, description, staffsId, projectsId, techStacksId } = payload;
+    const {
+      name,
+      description,
+      staffsId,
+      projectsId,
+      techStacksId,
+      remove,
+    } = payload;
 
     const deptRecord = await findOne(Department, { name }, 'id');
     if (deptRecord) {
@@ -100,7 +113,7 @@ const createDepartmentService = async (payload) => {
     );
     return response;
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -110,14 +123,19 @@ const updateDepartmentService = async (id, payload) => {
     if (!record) {
       throw new ErrorHandler(404, 'Department not exists', 'INVALID');
     }
-    await updateOne(Department, { _id: id }, { $set: payload });
+    await updateOne(Department, { _id: id }, { $set: payload.update });
+    await updateMany(
+      Project,
+      { _id: { $in: payload.remove.projectsId } },
+      { $pull: { departmentsId: id } }
+    );
     return handleResponse(
       200,
       'Update data successfully',
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -134,7 +152,7 @@ const deleteDepartmentService = async (id) => {
       'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 

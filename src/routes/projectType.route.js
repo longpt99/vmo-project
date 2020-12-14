@@ -6,18 +6,21 @@ import {
   updateProjectType,
   deleteProjectType,
 } from '../controllers/projectType.controller';
-import { bearerToken } from '../middlewares';
+import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
 router.use('/project-Types', bearerToken);
 
-router.route('/project-Types').get(getProjectTypes).post(createProjectType);
+router
+  .route('/project-Types')
+  .get(getProjectTypes)
+  .post(verifyRequest, createProjectType);
 
 router
   .route('/project-Types/:id')
   .get(getProjectTypeDetail)
-  .put(updateProjectType)
+  .put(verifyRequest, updateProjectType)
   .delete(deleteProjectType);
 
 export default router;

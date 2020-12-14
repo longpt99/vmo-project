@@ -1,5 +1,5 @@
 import express from 'express';
-import { bearerToken } from '../middlewares';
+import { bearerToken, verifyRequest } from '../middlewares';
 import {
   getCustomerList,
   createCustomer,
@@ -12,12 +12,15 @@ const router = express.Router();
 
 router.use('/customers', bearerToken);
 
-router.route('/customers').get(getCustomerList).post(createCustomer);
+router
+  .route('/customers')
+  .get(getCustomerList)
+  .post(verifyRequest, createCustomer);
 
 router
   .route('/customers/:id')
   .get(getCustomerDetail)
-  .put(updateCustomer)
+  .put(verifyRequest, updateCustomer)
   .delete(deleteCustomer);
 
 export default router;

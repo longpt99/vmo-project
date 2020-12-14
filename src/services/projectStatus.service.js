@@ -26,13 +26,16 @@ const getProjectStatusesService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const getProjectStatusService = async (id) => {
   try {
     const record = await findOne(ProjectStatus, { _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
+    }
     return handleResponse(
       200,
       'Get data successfully',
@@ -40,7 +43,7 @@ const getProjectStatusService = async (id) => {
       { record }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -58,7 +61,7 @@ const createProjectStatusService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -75,7 +78,7 @@ const updateProjectStatusService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -92,6 +95,6 @@ const deleteProjectStatusService = async (id) => {
       'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

@@ -19,11 +19,9 @@ export default async (req, res, next) => {
     req.user = user;
     return next();
   } catch (error) {
-    if (error instanceof ErrorHandler) {
-      res.status(error.status);
-    } else {
-      res.status(500);
+    if (error.name === 'TokenExpiredError') {
+      return next(new ErrorHandler(401, error.message, 'UNAUTHORIZATION'));
     }
-    return res.json(error);
+    return next(error);
   }
 };

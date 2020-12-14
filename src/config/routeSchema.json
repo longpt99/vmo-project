@@ -6,8 +6,8 @@
     "/tech-stacks": "/json/techStacks/createTechStack.json",
     "/projects": "/json/projects/createProject.json",
     "/project-types": "/json/projectTypes/createProjectType.json",
-    "/project-statuses": "/json/project-statuses/createProjectStatus.json",
-    "/auth/refresh-token": "/json/staffs/refreshToken.json",
+    "/project-statuses": "/json/projectStatuses/createProjectStatus.json",
+    "/auth/refresh-token": "/json/auth/refreshToken.json",
     "/auth/login": "/json/auth/login.json"
   },
   "PUT": {
@@ -17,6 +17,6 @@
     "/tech-stacks/:id": "/json/techStacks/updateTechStack.json",
     "/projects/:id": "/json/projects/updateProject.json",
     "/project-types/:id": "/json/projectTypes/updateProjectType.json",
-    "/project-statuses/:id": "/json/project-statuses/updateProjectStatus.json"
+    "/project-statuses/:id": "/json/projectStatuses/updateProjectStatus.json"
   }
 }

@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.route('/auth/login').post(verifyRequest, login);
 
-router.route('/auth/refresh-token').post(verifyRefreshToken, refreshToken);
+router
+  .route('/auth/refresh-token')
+  .post(verifyRequest, verifyRefreshToken, refreshToken);
 
 export default router;

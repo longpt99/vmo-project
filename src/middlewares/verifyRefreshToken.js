@@ -13,10 +13,8 @@ export default async (req, res, next) => {
     );
 
     if (accessPayload.exp * 1000 > Date.now()) {
-      console.log(123);
       throw new ErrorHandler(401, 'Unauthorization', 'UNAUTHORIZATION');
     }
-    console.log(accessPayload);
     const refreshPayload = verifyToken(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET_KEY
@@ -27,7 +25,9 @@ export default async (req, res, next) => {
     res.locals.personalId = refreshPayload.personalId;
     return next();
   } catch (error) {
-    error.status = 401;
-    return res.status(error.status).json(error);
+    if (error.name === 'TokenExpiredError') {
+      return next(new ErrorHandler(401, error.message, 'UNAUTHORIZATION'));
+    }
+    return next(error);
   }
 };

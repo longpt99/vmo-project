@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 const StaffSchema = new Schema(
   {
@@ -7,7 +6,7 @@ const StaffSchema = new Schema(
     email: String,
     dob: Date,
     phoneNumber: String,
-    address: String,
+    address: { type: String, default: '' },
     identityNumber: String,
     languages: [String],
     certs: [String],

@@ -30,6 +30,6 @@ export default async (req, res, next) => {
 
     return next();
   } catch (error) {
-    return res.status(error.status).json(error);
+    return next(error);
   }
 };

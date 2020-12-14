@@ -14,48 +14,48 @@ export {
   deleteCustomer,
 };
 
-const getCustomerList = async (req, res) => {
+const getCustomerList = async (req, res, next) => {
   try {
     const response = await getCustomersService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const getCustomerDetail = async (req, res) => {
+const getCustomerDetail = async (req, res, next) => {
   try {
     const response = await getCustomerService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const createCustomer = async (req, res) => {
+const createCustomer = async (req, res, next) => {
   try {
     const response = await createCustomerService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const updateCustomer = async (req, res) => {
+const updateCustomer = async (req, res, next) => {
   try {
     const response = await updateCustomerService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const deleteCustomer = async (req, res) => {
+const deleteCustomer = async (req, res, next) => {
   try {
     const response = await deleteCustomerService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 

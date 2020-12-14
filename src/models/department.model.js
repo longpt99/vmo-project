@@ -1,13 +1,12 @@
 import { Schema, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 const DepartmentSchema = new Schema(
   {
     name: String,
     description: String,
-    techStacksId: [Schema.Types.ObjectId],
-    projectsId: [Schema.Types.ObjectId],
-    staffsId: [Schema.Types.ObjectId],
+    techStacksId: [{ type: Schema.Types.ObjectId, ref: 'TechStack' }],
+    projectsId: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
+    staffsId: [{ type: Schema.Types.ObjectId, ref: 'Staff' }],
   },
   {
     timestamps: true,

@@ -13,47 +13,47 @@ export {
   deleteProject,
 };
 
-const getProjectList = async (req, res) => {
+const getProjectList = async (req, res, next) => {
   try {
     const response = await getProjectsService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const getProjectDetail = async (req, res) => {
+const getProjectDetail = async (req, res, next) => {
   try {
     const response = await getProjectService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const createProject = async (req, res) => {
+const createProject = async (req, res, next) => {
   try {
     const response = await createProjectService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const updateProject = async (req, res) => {
+const updateProject = async (req, res, next) => {
   try {
     const response = await updateProjectService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const deleteProject = async (req, res) => {
+const deleteProject = async (req, res, next) => {
   try {
     const response = await deleteProjectService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };

@@ -27,7 +27,7 @@ const getCustomersService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -44,7 +44,7 @@ const getCustomerService = async (id) => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -62,7 +62,7 @@ const createCustomerService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -79,7 +79,7 @@ const updateCustomerService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -96,6 +96,6 @@ const deleteCustomerService = async (id) => {
       'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

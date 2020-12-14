@@ -14,48 +14,48 @@ export {
   deleteProjectType,
 };
 
-const getProjectTypes = async (req, res) => {
+const getProjectTypes = async (req, res, next) => {
   try {
     const response = await getProjectTypesService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const getProjectTypeDetail = async (req, res) => {
+const getProjectTypeDetail = async (req, res, next) => {
   try {
     const response = await getProjectTypeService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const createProjectType = async (req, res) => {
+const createProjectType = async (req, res, next) => {
   try {
     const response = await createProjectTypeService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const updateProjectType = async (req, res) => {
+const updateProjectType = async (req, res, next) => {
   try {
     const response = await updateProjectTypeService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const deleteProjectType = async (req, res) => {
+const deleteProjectType = async (req, res, next) => {
   try {
     const response = await deleteProjectTypeService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 

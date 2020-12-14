@@ -1,9 +1,16 @@
-import { ErrorHandler, handleError } from '../helpers/response';
-export { findOne, findMany, insert, updateOne, deleteOne, updateMany };
+export {
+  findOne,
+  findMany,
+  insert,
+  updateOne,
+  deleteOne,
+  updateMany,
+  deleteMany,
+};
 
-const findOne = async (model, filter, projection = '') => {
+const findOne = async (model, filter, projection = '', populate) => {
   try {
-    return await model.findOne(filter, projection);
+    return await model.findOne(filter, projection).populate(populate);
   } catch (error) {
     throw error;
   }
@@ -11,8 +18,7 @@ const findOne = async (model, filter, projection = '') => {
 
 const findMany = async (model, filter, projection = '') => {
   try {
-    const record = await model.find(filter, projection);
-    return record;
+    return await model.find(filter, projection);
   } catch (error) {
     return error;
   }
@@ -28,14 +34,14 @@ const updateOne = async (model, filter, doc) => {
 
 const updateMany = async (model, filter, doc) => {
   try {
-    await model.updateMany(filter, doc);
+    return await model.updateMany(filter, doc);
   } catch (error) {
     throw error;
   }
 };
 const deleteOne = async (model, filter) => {
   try {
-    await model.deleteOne(filter);
+    return await model.deleteOne(filter);
   } catch (error) {
     throw error;
   }
@@ -43,8 +49,16 @@ const deleteOne = async (model, filter) => {
 
 const insert = async (model, payload) => {
   try {
-    await model.create(payload);
+    return await model.create(payload);
   } catch (error) {
-    return handleError(error);
+    throw error;
+  }
+};
+
+const deleteMany = async (model, payload) => {
+  try {
+    return await model.deleteMany(payload);
+  } catch (error) {
+    throw error;
   }
 };

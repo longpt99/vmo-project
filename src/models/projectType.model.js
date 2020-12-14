@@ -1,11 +1,10 @@
 import { Schema, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 const ProjectTypeSchema = new Schema(
   {
     name: String,
     description: String,
-    priorityPoint: Number,
+    priorityNumber: Number,
     status: String,
   },
   {

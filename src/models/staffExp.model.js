@@ -1,12 +1,20 @@
 import { Schema, model } from 'mongoose';
 
+const StaffSkillSchema = new Schema(
+  {
+    techStackId: { type: Schema.Types.ObjectId, ref: 'TechStack' },
+    level: String,
+  },
+  { _id: false }
+);
+
 const StaffExpSchema = new Schema(
   {
     staffId: Schema.Types.ObjectId,
     skills: {
-      type: [{ techStackId: Schema.Types.ObjectId, exp: Date }],
+      type: [StaffSkillSchema],
     },
-    projectsId: [Schema.Types.ObjectId],
+    projectsId: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
   },
   {
     timestamps: true,

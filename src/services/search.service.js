@@ -24,6 +24,6 @@ const getSearchResult = async (query) => {
       { record, numberDoc: number }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

@@ -14,44 +14,44 @@ export {
   deleteTechStack,
 };
 
-const getTechStackList = async (req, res) => {
+const getTechStackList = async (req, res, next) => {
   try {
     const response = await getTechStacksService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
-const getTechStackDetail = async (req, res) => {
+const getTechStackDetail = async (req, res, next) => {
   try {
     const response = await getTechStackService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
-const createTechStack = async (req, res) => {
+const createTechStack = async (req, res, next) => {
   try {
     const response = await createTechStackService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
-const updateTechStack = async (req, res) => {
+const updateTechStack = async (req, res, next) => {
   try {
     const response = await updateTechStackService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
-const deleteTechStack = async (req, res) => {
+const deleteTechStack = async (req, res, next) => {
   try {
     const response = await deleteTechStackService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 

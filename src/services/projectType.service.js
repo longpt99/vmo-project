@@ -26,7 +26,7 @@ const getProjectTypesService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -43,7 +43,7 @@ const getProjectTypeService = async (id) => {
       { record }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -61,7 +61,7 @@ const createProjectTypeService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -78,7 +78,7 @@ const updateProjectTypeService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -95,6 +95,6 @@ const deleteProjectTypeService = async (id) => {
       'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

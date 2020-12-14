@@ -38,13 +38,24 @@ const getProjectsService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const getProjectService = async (id) => {
   try {
-    const record = await findOne(Project, { _id: id });
+    const populate = [
+      { path: 'techStacksId', select: 'name status' },
+      { path: 'departmentsId', select: 'name' },
+      { path: 'staffsId', select: 'name' },
+      { path: 'customersId', select: 'name' },
+      { path: 'projectTypesId', select: 'name' },
+      { path: 'projectStatusId', select: 'name' },
+    ];
+    const record = await findOne(Project, { _id: id }, '', populate);
+    if (!record) {
+      throw new ErrorHandler(404, 'Project not exists', 'INVALID');
+    }
     return handleResponse(
       200,
       'Get data successfully',
@@ -52,7 +63,7 @@ const getProjectService = async (id) => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -70,12 +81,7 @@ const createProjectService = async (payload) => {
     } = payload;
     const techStacksAsync = findMany(
       TechStack,
-      {
-        _id: {
-          $in: techStacksId,
-        },
-        status: 'active',
-      },
+      { _id: { $in: techStacksId }, status: 'active' },
       'id'
     );
 
@@ -91,33 +97,19 @@ const createProjectService = async (payload) => {
 
     const departmentsAsync = findMany(
       Department,
-      {
-        _id: {
-          $in: departmentsId,
-        },
-      },
+      { _id: { $in: departmentsId } },
       'id'
     );
 
     const projectTypesAsync = findMany(
       ProjectType,
-      {
-        _id: {
-          $in: projectTypesId,
-        },
-        status: 'active',
-      },
+      { _id: { $in: projectTypesId }, status: 'active' },
       'id'
     );
 
     const customersAsync = findMany(
       Customer,
-      {
-        _id: {
-          $in: customersId,
-        },
-        status: 'active',
-      },
+      { _id: { $in: customersId }, status: 'active' },
       'id'
     );
 
@@ -146,10 +138,7 @@ const createProjectService = async (payload) => {
       throw new ErrorHandler(400, 'Invalid customer', 'INVALID');
     }
 
-    await findOne(ProjectStatus, {
-      _id: projectStatusId,
-      status: 'active',
-    });
+    await findOne(ProjectStatus, { _id: projectStatusId, status: 'active' });
     const projectId = mongoose.Types.ObjectId();
     await Promise.all([
       insert(Project, {
@@ -178,16 +167,8 @@ const createProjectService = async (payload) => {
       ),
       updateMany(
         Department,
-        {
-          _id: {
-            $in: departmentsId,
-          },
-        },
-        {
-          $push: {
-            projectsId: projectId,
-          },
-        }
+        { _id: { $in: departmentsId } },
+        { $push: { projectsId: projectId } }
       ),
     ]);
     return handleResponse(
@@ -196,7 +177,7 @@ const createProjectService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -205,17 +186,15 @@ const updateProjectService = async (id, payload) => {
     if (!id) {
       throw new ErrorHandler(400, 'Invalid', 'INVALID');
     }
-    await findOne(Project, { _id: id });
-    await updateOne(
-      Project,
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          ...payload,
-        },
-      }
+    const record = await findOne(Project, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project not exists', 'INVALID');
+    }
+    await updateOne(Project, { _id: id }, { $set: payload });
+    await updateMany(
+      Department,
+      { _id: { $in: payload.remove.departmentsId } },
+      { $pull: { projectsId: id } }
     );
     return handleResponse(
       200,
@@ -223,7 +202,7 @@ const updateProjectService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -238,25 +217,13 @@ const deleteProjectService = async (id) => {
       deleteOne(Project, { _id: id }),
       updateMany(
         StaffExp,
-        {
-          projectsId: { $in: id },
-        },
-        {
-          $pull: {
-            projectsId: id,
-          },
-        }
+        { projectsId: { $in: id } },
+        { $pull: { projectsId: id } }
       ),
       updateMany(
         Department,
-        {
-          projectsId: { $in: id },
-        },
-        {
-          $pull: {
-            projectsId: id,
-          },
-        }
+        { projectsId: { $in: id } },
+        { $pull: { projectsId: id } }
       ),
     ]);
     return handleResponse(
@@ -265,6 +232,6 @@ const deleteProjectService = async (id) => {
       'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

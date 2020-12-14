@@ -1,11 +1,12 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
-import { TechStack } from '../models';
+import { ErrorHandler, handleResponse } from '../helpers/response';
+import { Department, Project, TechStack } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
   insert,
+  updateMany,
 } from './commonQuery.service';
 
 export {
@@ -26,7 +27,7 @@ const getTechStacksService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -40,7 +41,7 @@ const getTechStackService = async (id) => {
       { record }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -58,7 +59,7 @@ const createTechStackService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -85,7 +86,7 @@ const updateTechStackService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -95,13 +96,25 @@ const deleteTechStackService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
-    await deleteOne(TechStack, { _id: id });
+    await Promise.all([
+      deleteOne(TechStack, { _id: id }),
+      updateMany(
+        Project,
+        { techStacksId: id },
+        { $pull: { techStacksId: id } }
+      ),
+      updateMany(
+        Department,
+        { techStacksId: id },
+        { $pull: { techStacksId: id } }
+      ),
+    ]);
     return handleResponse(
       200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
+      'Delete data successfully',
+      'DELETE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

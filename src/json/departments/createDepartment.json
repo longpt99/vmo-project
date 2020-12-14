@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "techStacksId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "projectsId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "staffsId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

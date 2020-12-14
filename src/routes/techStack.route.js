@@ -6,18 +6,20 @@ import {
   updateTechStack,
   getTechStackDetail,
 } from '../controllers/techStack.controller';
-import { bearerToken } from '../middlewares';
+import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
 router.use('/tech-stacks', bearerToken);
 
-router.route('/tech-stacks').get(getTechStackList).post(createTechStack);
-
+router
+  .route('/tech-stacks')
+  .get(getTechStackList)
+  .post(verifyRequest, createTechStack);
 router
   .route('/tech-stacks/:id')
   .get(getTechStackDetail)
-  .put(updateTechStack)
+  .put(verifyRequest, updateTechStack)
   .delete(deleteTechStack);
 
 export default router;

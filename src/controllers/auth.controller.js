@@ -1,16 +1,15 @@
 import { loginService, refreshTokenService } from '../services/auth.service';
 export { login, refreshToken };
 
-const login = async (req, res) => {
-  // console.log(err);
+const login = async (req, res, next) => {
   try {
     const response = await loginService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
-const refreshToken = async (req, res) => {
+const refreshToken = async (req, res, next) => {
   try {
     const response = await refreshTokenService(
       req.body.refreshToken,
@@ -18,11 +17,13 @@ const refreshToken = async (req, res) => {
     );
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res, next) => {
   try {
-  } catch (error) {}
+  } catch (error) {
+    return next(error);
+  }
 };

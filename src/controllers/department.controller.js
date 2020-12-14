@@ -14,50 +14,48 @@ export {
   deleteDepartment,
 };
 
-const getDepartmentList = async (req, res) => {
+const getDepartmentList = async (req, res, next) => {
   try {
     const response = await getDepartmentsService();
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const getDepartmentDetail = async (req, res) => {
+const getDepartmentDetail = async (req, res, next) => {
   try {
     const response = await getDepartmentService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const createDepartment = async (req, res) => {
+const createDepartment = async (req, res, next) => {
   try {
     const response = await createDepartmentService(req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const updateDepartment = async (req, res) => {
+const updateDepartment = async (req, res, next) => {
   try {
-    const response = await updateDepartmentService(req.params.id, {
-      ...req.body,
-    });
+    const response = await updateDepartmentService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 
-const deleteDepartment = async (req, res) => {
+const deleteDepartment = async (req, res, next) => {
   try {
     const response = await deleteDepartmentService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return next(error);
   }
 };
 

@@ -6,7 +6,7 @@ import {
   updateProject,
   deleteProject,
 } from '../controllers/project.controller';
-import { bearerToken } from '../middlewares';
+import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
@@ -15,14 +15,12 @@ router.use('/projects', bearerToken);
 router
   .route('/projects')
   .get(getProjectList)
-  .post(createProject)
-  .put()
-  .delete();
+  .post(verifyRequest, createProject);
 
 router
   .route('/projects/:id')
   .get(getProjectDetail)
-  .put(updateProject)
+  .put(verifyRequest, updateProject)
   .delete(deleteProject);
 
 export default router;

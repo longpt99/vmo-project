@@ -31,14 +31,14 @@ const loginService = async (data) => {
       accessToken,
       refreshToken,
     });
+    // return 5;
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const refreshTokenService = (refreshToken, payload) => {
   try {
-    console.log(refreshToken);
     const accessToken = signToken(
       { payload },
       process.env.ACCESS_TOKEN_SECRET_KEY,

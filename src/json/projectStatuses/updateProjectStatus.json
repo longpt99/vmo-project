@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "required": ["name", "description", "status", "priorityNumber"],
   "properties": {
     "name": {
       "type": "string"
@@ -10,9 +9,6 @@
     },
     "status": {
       "type": "string"
-    },
-    "priorityNumber": {
-      "type": "number"
     }
   }
 }

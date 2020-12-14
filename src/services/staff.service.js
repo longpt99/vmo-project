@@ -1,13 +1,15 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
-import { Account, Staff, StaffExp } from '../models';
+import { ErrorHandler, handleResponse } from '../helpers/response';
+import { Account, Department, Staff, StaffExp, TechStack } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
   insert,
+  updateMany,
 } from './commonQuery.service';
 import { Types } from 'mongoose';
+import len from './arrayLength';
 
 export {
   getStaffsService,
@@ -15,6 +17,7 @@ export {
   createStaffService,
   updateStaffService,
   deleteStaffService,
+  updateStaffExpService,
 };
 
 const getStaffsService = async () => {
@@ -27,21 +30,34 @@ const getStaffsService = async () => {
       record
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const getStaffService = async (id) => {
   try {
-    const record = await findOne(Staff, { _id: id });
+    const staffInfoRecord = await findOne(Staff, { _id: id });
+    if (!staffInfoRecord) {
+      throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
+    }
+    const populate = [
+      { path: 'projectsId', select: 'name' },
+      { path: 'skills.techStackId', select: 'name' },
+    ];
+    const staffExpRecord = await findOne(
+      StaffExp,
+      { staffId: id },
+      '',
+      populate
+    );
     return handleResponse(
       200,
       'Get data successfully',
       'GET_DATA_SUCCESSFULLY',
-      record
+      { staffInfoRecord, staffExpRecord }
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
@@ -86,13 +102,16 @@ const createStaffService = async (payload) => {
       'CREATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const updateStaffService = async (id, payload) => {
   try {
-    await findOne(Staff, { _id: id });
+    const record = await findOne(Staff, { _id: id });
+    if (!record) {
+      throw new ErrorHandler('Staff no exists', 'INVALID');
+    }
     await updateOne(
       Staff,
       {
@@ -110,21 +129,58 @@ const updateStaffService = async (id, payload) => {
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };
 
 const deleteStaffService = async (id) => {
   try {
-    await findOne(Staff, { _id: id });
-    await deleteOne(Staff, { _id: id });
+    const record = await findOne(Staff, { _id: id });
+    if (!record) {
+      throw new ErrorHandler('Staff no exists', 'INVALID');
+    }
+    await Promise.all([
+      deleteOne(Staff, { _id: id }),
+      deleteOne(StaffExp, { staffId: id }),
+      deleteOne(Account, { personalId: id }),
+    ]);
     return handleResponse(
       200,
       'Update data successfully',
       'UPDATE_DATA_SUCCESSFULLY'
     );
   } catch (error) {
-    return handleError(error);
+    throw error;
+  }
+};
+
+const updateStaffExpService = async (id, payload) => {
+  try {
+    const record = await findOne(StaffExp, { staffId: id }, 'id');
+    const techStacksId = [];
+    payload.skills.forEach((item) => techStacksId.push(item.techStackId));
+    const techStacksIdRecord = await findMany(
+      TechStack,
+      {
+        _id: { $in: techStacksId },
+      },
+      'id'
+    );
+
+    if (len(techStacksIdRecord) < len(techStacksId)) {
+      throw new ErrorHandler(400, 'Invalid', 'INVALID');
+    }
+    if (!record) {
+      throw new ErrorHandler('Staff no exists', 'INVALID');
+    }
+    await updateOne(StaffExp, { staffId: id }, { $set: payload });
+    return handleResponse(
+      200,
+      'Update data successfully',
+      'UPDATE_DATA_SUCCESSFULLY'
+    );
+  } catch (error) {
+    throw error;
   }
 };
 

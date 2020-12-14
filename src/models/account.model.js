@@ -1,6 +1,5 @@
 import { compare, hash } from 'bcrypt';
 import { Schema, model } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 
 const AccountSchema = new Schema(
   {
