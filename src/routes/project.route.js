@@ -20,7 +20,7 @@ router
 router
   .route('/projects/:id')
   .get(getProjectDetail)
-  .put(verifyRequest, updateProject)
+  .put(updateProject)
   .delete(deleteProject);
 
 export default router;

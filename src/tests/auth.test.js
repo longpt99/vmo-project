@@ -1,27 +1,32 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 // import axios from 'axios';
-import { loginService, refreshTokenService } from '../services/auth.service';
-import { Account } from '../models';
+import { loginService } from '../services/auth.service';
 
 describe('AUTH TESTING', () => {
-  // let axiosGet;
-  let accountFindOne;
-
-  beforeEach(() => {
-    accountFindOne = sinon.stub(Account, 'findOne');
-    // axiosPost = sinon.stub(Account, 'post');
-  });
-
-  afterEach(() => {
-    // axiosGet.restore();
-    accountFindOne.restore();
-  });
-
   it('Should return success', async () => {
     const account = { email: 'admin01@gmail.com', password: 'admin123' };
     const result = await loginService(account);
     expect(result.status).to.equal(200);
+  });
+
+  it('Should return fail because password is wrong', async () => {
+    try {
+      const account = { email: 'admin01@gmail.com', password: 'admin' };
+      const result = await loginService(account);
+    } catch (error) {
+      expect(error.status).to.equal(404);
+      expect(error.message).to.equal('Wrong password');
+    }
+  });
+
+  it('Should return fail because email not exists', async () => {
+    try {
+      const account = { email: 'admin@gmail.com' };
+      const result = await loginService(account);
+    } catch (error) {
+      expect(error.message).to.equal('Account not exists');
+    }
   });
 
   // it('Should return fail because number not a number', async () => {

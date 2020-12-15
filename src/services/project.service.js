@@ -1,4 +1,4 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleResponse } from '../helpers/response';
 import {
   Customer,
   Department,
@@ -16,9 +16,10 @@ import {
   updateMany,
   deleteOne,
   insert,
+  findLength,
 } from './commonQuery.service';
 import len from '../services/arrayLength';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 export {
   getProjectsService,
@@ -69,106 +70,23 @@ const getProjectService = async (id) => {
 
 const createProjectService = async (payload) => {
   try {
-    const {
-      name,
-      description,
-      techStacksId,
-      projectTypesId,
-      departmentsId,
-      projectStatusId,
-      staffsId,
-      customersId,
-    } = payload;
-    const techStacksAsync = findMany(
-      TechStack,
-      { _id: { $in: techStacksId }, status: 'active' },
-      'id'
-    );
-
-    const staffsAsync = findMany(
-      Staff,
-      {
-        _id: {
-          $in: staffsId,
-        },
-      },
-      'id'
-    );
-
-    const departmentsAsync = findMany(
-      Department,
-      { _id: { $in: departmentsId } },
-      'id'
-    );
-
-    const projectTypesAsync = findMany(
-      ProjectType,
-      { _id: { $in: projectTypesId }, status: 'active' },
-      'id'
-    );
-
-    const customersAsync = findMany(
-      Customer,
-      { _id: { $in: customersId }, status: 'active' },
-      'id'
-    );
-
-    const techStacksRecord = await techStacksAsync;
-    if (len(techStacksRecord) < len(techStacksId)) {
-      throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
-    }
-
-    const staffsRecord = await staffsAsync;
-    if (len(staffsRecord) < len(staffsId)) {
-      throw new ErrorHandler(400, 'Invalid staff', 'INVALID');
-    }
-
-    const departmentsRecord = await departmentsAsync;
-    if (len(departmentsRecord) < len(departmentsId)) {
-      throw new ErrorHandler(400, 'Invalid department', 'INVALID');
-    }
-
-    const projectTypesRecord = await projectTypesAsync;
-    if (len(projectTypesRecord) < len(projectTypesId)) {
-      throw new ErrorHandler(400, 'Invalid project Type', 'INVALID');
-    }
-
-    const customersRecord = await customersAsync;
-    if (len(customersRecord) < len(customersId)) {
-      throw new ErrorHandler(400, 'Invalid customer', 'INVALID');
-    }
-
-    await findOne(ProjectStatus, { _id: projectStatusId, status: 'active' });
-    const projectId = mongoose.Types.ObjectId();
+    const { staffsId, departmentsId, projectsId } = payload;
+    await verifyProjectRequest(payload);
+    const projectId = Types.ObjectId();
     await Promise.all([
       insert(Project, {
         _id: projectId,
-        name,
-        description,
-        techStacksId,
-        projectTypesId,
-        departmentsId,
-        staffsId,
-        customersId,
-        projectStatusId,
+        ...payload,
       }),
       updateMany(
         StaffExp,
-        {
-          staffId: {
-            $in: staffsId,
-          },
-        },
-        {
-          $push: {
-            projectsId: projectId,
-          },
-        }
+        { staffId: { $in: staffsId } },
+        { $push: { projectsId: projectsId } }
       ),
       updateMany(
         Department,
         { _id: { $in: departmentsId } },
-        { $push: { projectsId: projectId } }
+        { $push: { projectsId: projectsId } }
       ),
     ]);
     return handleResponse(
@@ -183,19 +101,40 @@ const createProjectService = async (payload) => {
 
 const updateProjectService = async (id, payload) => {
   try {
-    if (!id) {
-      throw new ErrorHandler(400, 'Invalid', 'INVALID');
-    }
+    const { update, remove } = payload;
     const record = await findOne(Project, { _id: id }, 'id');
     if (!record) {
       throw new ErrorHandler(404, 'Project not exists', 'INVALID');
     }
-    await updateOne(Project, { _id: id }, { $set: payload });
-    await updateMany(
-      Department,
-      { _id: { $in: payload.remove.departmentsId } },
-      { $pull: { projectsId: id } }
-    );
+    if (update) {
+      await verifyProjectRequest(update);
+      await updateOne(Project, { _id: id }, { $set: update });
+      await updateMany(
+        StaffExp,
+        { staffId: { $in: update.staffsId }, projectsId: { $ne: id } },
+        { $push: { projectsId: id } }
+      );
+      await updateMany(
+        Department,
+        { _id: { $in: update.departmentsId }, projectsId: { $ne: id } },
+        { $push: { projectsId: id } }
+      );
+    }
+
+    if (remove) {
+      await Promise.all([
+        updateMany(
+          Department,
+          { _id: { $in: remove.departmentsId } },
+          { $pull: { projectsId: id } }
+        ),
+        updateMany(
+          StaffExp,
+          { staffId: { $in: remove.staffsId } },
+          { $pull: { projectsId: id } }
+        ),
+      ]);
+    }
     return handleResponse(
       200,
       'Update data successfully',
@@ -211,20 +150,14 @@ const deleteProjectService = async (id) => {
     if (!id) {
       throw new ErrorHandler(400, 'Invalid', 'INVALID');
     }
-    await findOne(Project, { _id: id });
-    await deleteOne(Project, { _id: id });
+    const record = await findOne(Project, { _id: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Project not exist');
+    }
     await Promise.all([
       deleteOne(Project, { _id: id }),
-      updateMany(
-        StaffExp,
-        { projectsId: { $in: id } },
-        { $pull: { projectsId: id } }
-      ),
-      updateMany(
-        Department,
-        { projectsId: { $in: id } },
-        { $pull: { projectsId: id } }
-      ),
+      updateMany(StaffExp, { projectsId: id }, { $pull: { projectsId: id } }),
+      updateMany(Department, { projectsId: id }, { $pull: { projectsId: id } }),
     ]);
     return handleResponse(
       200,
@@ -233,5 +166,85 @@ const deleteProjectService = async (id) => {
     );
   } catch (error) {
     throw error;
+  }
+};
+
+const verifyProjectRequest = async (payload) => {
+  const {
+    name,
+    techStacksId = [],
+    projectTypesId = [],
+    departmentsId = [],
+    projectStatusId = {},
+    staffsId = [],
+    customersId = [],
+  } = payload;
+
+  const projectRecord = findOne(Project, { name }, 'id');
+
+  if (projectRecord) {
+    throw new ErrorHandler(404, 'Project already exists', 'INVALID');
+  }
+
+  const techStacksAsync = findLength(
+    TechStack,
+    { _id: { $in: techStacksId }, status: 'active' },
+    'id'
+  );
+
+  const staffsAsync = findLength(Staff, { _id: { $in: staffsId } }, 'id');
+
+  const departmentsAsync = findLength(
+    Department,
+    { _id: { $in: departmentsId } },
+    'id'
+  );
+
+  const projectTypesAsync = findLength(
+    ProjectType,
+    { _id: { $in: projectTypesId }, status: 'active' },
+    'id'
+  );
+
+  const customersAsync = findLength(
+    Customer,
+    { _id: { $in: customersId }, status: 'active' },
+    'id'
+  );
+
+  const projectStatusAsync = findLength(
+    ProjectStatus,
+    { _id: projectStatusId, status: 'active' },
+    'id'
+  );
+
+  const lenTechStacksRecord = await techStacksAsync;
+  if (lenTechStacksRecord < len(techStacksId)) {
+    throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
+  }
+
+  const lenStaffsRecord = await staffsAsync;
+  if (lenStaffsRecord < len(staffsId)) {
+    throw new ErrorHandler(400, 'Invalid staff', 'INVALID');
+  }
+
+  const lenDepartmentsRecord = await departmentsAsync;
+  if (lenDepartmentsRecord < len(departmentsId)) {
+    throw new ErrorHandler(400, 'Invalid department', 'INVALID');
+  }
+
+  const lenProjectTypesRecord = await projectTypesAsync;
+  if (lenProjectTypesRecord < len(projectTypesId)) {
+    throw new ErrorHandler(400, 'Invalid project Type', 'INVALID');
+  }
+
+  const lenCustomersRecord = await customersAsync;
+  if (lenCustomersRecord < len(customersId)) {
+    throw new ErrorHandler(400, 'Invalid customer', 'INVALID');
+  }
+
+  const projectStatusRecord = await projectStatusAsync;
+  if (projectStatusRecord < Object.keys(projectStatusId).length) {
+    throw new ErrorHandler(400, 'Invalid project status', 'INVALID');
   }
 };

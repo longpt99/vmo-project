@@ -9,6 +9,9 @@ const loginService = async (data) => {
   try {
     const { email, password } = data;
     const personal = await findOne(Account, { email }, 'password');
+    if (!personal) {
+      throw new ErrorHandler(404, 'Account not exists', 'INVALID');
+    }
     const isMatch = await personal.comparePassword(password);
     if (!isMatch) {
       throw new ErrorHandler(404, 'Wrong password', 'WRONG_PASSWORD');
@@ -31,7 +34,6 @@ const loginService = async (data) => {
       accessToken,
       refreshToken,
     });
-    // return 5;
   } catch (error) {
     throw error;
   }
@@ -50,6 +52,6 @@ const refreshTokenService = (refreshToken, payload) => {
       refreshToken,
     });
   } catch (error) {
-    return handleError(error);
+    throw error;
   }
 };

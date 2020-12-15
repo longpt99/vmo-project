@@ -1,5 +1,5 @@
 import { ErrorHandler, handleResponse } from '../helpers/response';
-import { Account, Department, Staff, StaffExp, TechStack } from '../models';
+import { Account, Staff, StaffExp, TechStack } from '../models';
 import {
   findOne,
   findMany,
@@ -7,6 +7,7 @@ import {
   deleteOne,
   insert,
   updateMany,
+  findLength,
 } from './commonQuery.service';
 import { Types } from 'mongoose';
 import len from './arrayLength';
@@ -157,21 +158,20 @@ const deleteStaffService = async (id) => {
 const updateStaffExpService = async (id, payload) => {
   try {
     const record = await findOne(StaffExp, { staffId: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
+    }
     const techStacksId = [];
     payload.skills.forEach((item) => techStacksId.push(item.techStackId));
-    const techStacksIdRecord = await findMany(
+    const lenTechStacksRecord = await findLength(
       TechStack,
       {
         _id: { $in: techStacksId },
       },
       'id'
     );
-
-    if (len(techStacksIdRecord) < len(techStacksId)) {
+    if (lenTechStacksRecord < len(techStacksId)) {
       throw new ErrorHandler(400, 'Invalid', 'INVALID');
-    }
-    if (!record) {
-      throw new ErrorHandler('Staff no exists', 'INVALID');
     }
     await updateOne(StaffExp, { staffId: id }, { $set: payload });
     return handleResponse(
