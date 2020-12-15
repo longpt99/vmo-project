@@ -11,7 +11,7 @@ export {
 
 const findOne = async (model, filter, projection = '', populate) => {
   try {
-    return await model.findOne(filter, projection);
+    return await model.findOne(filter, projection).populate(populate);
   } catch (error) {
     throw error;
   }
