@@ -118,7 +118,7 @@ const deleteDepartmentService = async (id) => {
       deleteOne(Department, { _id: id }),
       updateMany(
         Project,
-        { _id: { $in: remove.projectsId } },
+        { departmentsId: id },
         { $pull: { departmentsId: id } }
       ),
     ]);
