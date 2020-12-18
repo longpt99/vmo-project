@@ -1,4 +1,4 @@
-import { ErrorHandler, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import { Department, Project, Staff, TechStack } from '../models';
 import {
   findOne,
@@ -10,7 +10,7 @@ import {
   findLength,
 } from './commonQuery.service';
 
-import len from './arrayLength';
+import len from '../utils/arrayLength.util';
 
 export {
   getDepartmentService,

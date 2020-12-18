@@ -20,6 +20,7 @@ export default (app) => {
     projectStatusRouter,
     searchRouter,
   ]);
+
   app.get('/', (req, res) => {
     res.send('Server is running');
   });

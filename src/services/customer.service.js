@@ -1,5 +1,5 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
-import { Customer } from '../models';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
+import { Customer, Project } from '../models';
 import {
   deleteOne,
   findMany,
@@ -89,7 +89,10 @@ const deleteCustomerService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
     }
-    await deleteOne(Customer, { _id: id });
+    await Promise.all([
+      deleteOne(Customer, { _id: id }),
+      updateMany(Project, { customersId: id }, { $pull: { customersId: id } }),
+    ]);
     return handleResponse(
       200,
       'Delete data successfully',

@@ -21,6 +21,7 @@ router
   .put(verifyRequest, updateStaff)
   .delete(deleteStaff);
 
-router.route('/staffs/:id/exp').get().put(updateStaffExp);
+router.route('/staffs/:id/exp').put(updateStaffExp);
+router.route('/staffs/:id/roles').put(updateStaffExp);
 
 export default router;

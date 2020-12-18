@@ -1,11 +1,12 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
-import { ProjectStatus } from '../models';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
+import { Project, ProjectStatus } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
   insert,
+  updateMany,
 } from './commonQuery.service';
 
 export {
@@ -88,7 +89,14 @@ const deleteProjectStatusService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
     }
-    await deleteOne(ProjectStatus, { _id: id });
+    await Promise.all([
+      deleteOne(ProjectStatus, { _id: id }),
+      updateMany(
+        Project,
+        { projectStatusId: id },
+        { $set: { projectStatusId: null } }
+      ),
+    ]);
     return handleResponse(
       200,
       'Delete data successfully',

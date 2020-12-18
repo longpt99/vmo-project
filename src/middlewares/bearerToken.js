@@ -1,5 +1,5 @@
-import { ErrorHandler } from '../helpers/response';
-import { verifyToken } from '../services/tokenService';
+import { ErrorHandler } from '../helpers/response.helper';
+import { verifyToken } from '../helpers/token.helper';
 
 export default async (req, res, next) => {
   try {
@@ -16,7 +16,7 @@ export default async (req, res, next) => {
       throw new ErrorHandler(401, 'Expected a Bearer token', 'UNAUTHORIZATION');
     }
     const user = verifyToken(token, process.env.ACCESS_TOKEN_SECRET_KEY);
-    req.user = user;
+    res.locals.id = user.personalId;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "projectTypesId",
+    "customersId",
+    "projectStatusId"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "techStacksId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "projectTypesId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "staffsId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "customersId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "projectStatusId": {
+      "type": "string"
+    }
+  }
+}

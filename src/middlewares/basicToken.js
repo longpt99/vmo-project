@@ -1,4 +1,4 @@
-const { ErrorHandler } = require('../helpers/response');
+const { ErrorHandler } = require('../helpers/response.helper');
 const { Client } = require('../models');
 
 export default async (req, res, next) => {

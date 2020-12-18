@@ -1,5 +1,5 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
-import { Department, Project, TechStack } from '../models';
+import { Department, Project, Permission } from '../models';
 import {
   findOne,
   findMany,
@@ -10,16 +10,16 @@ import {
 } from './commonQuery.service';
 
 export {
-  getTechStacksService,
-  getTechStackService,
-  createTechStackService,
-  updateTechStackService,
-  deleteTechStackService,
+  getPermissionsService,
+  getPermissionService,
+  createPermissionService,
+  updatePermissionService,
+  deletePermissionService,
 };
 
-const getTechStacksService = async () => {
+const getPermissionsService = async () => {
   try {
-    const record = await findMany(TechStack, {});
+    const record = await findMany(Permission, {});
     return handleResponse(
       200,
       'Get data successfully',
@@ -31,9 +31,9 @@ const getTechStacksService = async () => {
   }
 };
 
-const getTechStackService = async (id) => {
+const getPermissionService = async (id) => {
   try {
-    const record = await findOne(TechStack, { _id: id });
+    const record = await findOne(Permission, { _id: id });
     return handleResponse(
       200,
       'Get data successfully',
@@ -45,14 +45,14 @@ const getTechStackService = async (id) => {
   }
 };
 
-const createTechStackService = async (payload) => {
+const createPermissionService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(TechStack, { name }, 'id');
+    const record = await findOne(Permission, { name }, 'id');
     if (record) {
       throw new ErrorHandler(404, 'Tech stack already exists', 'INVALID');
     }
-    await insert(TechStack, payload);
+    await insert(Permission, payload);
     return handleResponse(
       200,
       'Create data successfully',
@@ -63,13 +63,13 @@ const createTechStackService = async (payload) => {
   }
 };
 
-const updateTechStackService = async (id, payload) => {
+const updatePermissionService = async (id, payload) => {
   try {
-    const record = await findOne(TechStack, { _id: id });
+    const record = await findOne(Permission, { _id: id });
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
-    await updateOne(TechStack, { _id: id }, { $set: payload });
+    await updateOne(Permission, { _id: id }, { $set: payload });
     return handleResponse(
       200,
       'Update data successfully',
@@ -80,23 +80,23 @@ const updateTechStackService = async (id, payload) => {
   }
 };
 
-const deleteTechStackService = async (id) => {
+const deletePermissionService = async (id) => {
   try {
-    const record = await findOne(TechStack, { _id: id });
+    const record = await findOne(Permission, { _id: id });
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
     await Promise.all([
-      deleteOne(TechStack, { _id: id }),
+      deleteOne(Permission, { _id: id }),
       updateMany(
         Project,
-        { techStacksId: id },
-        { $pull: { techStacksId: id } }
+        { PermissionsId: id },
+        { $pull: { PermissionsId: id } }
       ),
       updateMany(
         Department,
-        { techStacksId: id },
-        { $pull: { techStacksId: id } }
+        { PermissionsId: id },
+        { $pull: { PermissionsId: id } }
       ),
     ]);
     return handleResponse(

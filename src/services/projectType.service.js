@@ -1,11 +1,12 @@
-import { handleError, handleResponse, ErrorHandler } from '../helpers/response';
-import { ProjectType } from '../models';
+import { handleResponse, ErrorHandler } from '../helpers/response.helper';
+import { Project, ProjectType } from '../models';
 import {
   findOne,
   findMany,
   updateOne,
   deleteOne,
   insert,
+  updateMany,
 } from './commonQuery.service';
 
 export {
@@ -88,7 +89,14 @@ const deleteProjectTypeService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
     }
-    await deleteOne(ProjectType, { _id: id });
+    await Promise.all([
+      deleteOne(ProjectType, { _id: id }),
+      updateMany(
+        Project,
+        { projectTypesId: id },
+        { $pull: { projectTypesId: id } }
+      ),
+    ]);
     return handleResponse(
       200,
       'Delete data successfully',

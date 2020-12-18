@@ -1,5 +1,5 @@
-import { ErrorHandler } from '../helpers/response';
-import { decodeToken, verifyToken } from '../services/tokenService';
+import { ErrorHandler } from '../helpers/response.helper';
+import { decodeToken, verifyToken } from '../helpers/token.helper';
 
 export default async (req, res, next) => {
   try {

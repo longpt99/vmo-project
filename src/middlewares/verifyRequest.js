@@ -1,8 +1,7 @@
 import { promises as fs } from 'fs';
 import Ajv from 'ajv';
 import path from 'path';
-import { ErrorHandler } from '../helpers/response';
-import logger from '../helpers/logger';
+import { ErrorHandler } from '../helpers/response.helper';
 
 export default async (req, res, next) => {
   try {
@@ -21,7 +20,7 @@ export default async (req, res, next) => {
         'utf8'
       )
     );
-    const ajv = Ajv({ allErrors: true });
+    const ajv = new Ajv({ allErrors: true });
     const validate = ajv.compile(schemaPath);
     const valid = validate(req.body);
     if (!valid) {

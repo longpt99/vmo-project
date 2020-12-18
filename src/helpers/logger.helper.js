@@ -15,19 +15,21 @@ const logFormat = format.combine(
 const transport = new DailyRotateFile({
   filename: path.resolve(__dirname, 'logs', `%DATE%.log`),
   dirname: './logs/',
-  datePattern: 'YYYY-MM-DD',
-  level: 'info',
-  zippedArchive: true,
+  datePattern: 'DD-MM-YYYY',
   maxSize: '20m',
   maxFiles: '14d',
-  prepend: true,
+  // level: 'error',
+  // zippedArchive: true,
+  // prepend: true,
+  // handleExceptions: true,
+  // json: true,
 });
 
 const logger = createLogger({
   format: logFormat,
-  transports: [transport, new transports.Console({ level: 'info' })],
+  transports: [transport, new transports.Console()],
 });
 
 export default (data) => {
-  logger.info(data);
+  logger.error(data);
 };

@@ -1,5 +1,5 @@
-import { ErrorHandler, handleResponse } from '../helpers/response';
-import { Account, Staff, StaffExp, TechStack } from '../models';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
+import { Account, Department, Staff, StaffExp, TechStack } from '../models';
 import {
   findOne,
   findMany,
@@ -10,7 +10,7 @@ import {
   findLength,
 } from './commonQuery.service';
 import { Types } from 'mongoose';
-import len from './arrayLength';
+import len from '../utils/arrayLength.util';
 
 export {
   getStaffsService,
@@ -19,6 +19,7 @@ export {
   updateStaffService,
   deleteStaffService,
   updateStaffExpService,
+  updateStaffRoleService,
 };
 
 const getStaffsService = async () => {
@@ -113,17 +114,7 @@ const updateStaffService = async (id, payload) => {
     if (!record) {
       throw new ErrorHandler('Staff no exists', 'INVALID');
     }
-    await updateOne(
-      Staff,
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          ...payload,
-        },
-      }
-    );
+    await updateOne(Staff, { _id: id }, { $set: payload });
     return handleResponse(
       200,
       'Update data successfully',
@@ -144,6 +135,8 @@ const deleteStaffService = async (id) => {
       deleteOne(Staff, { _id: id }),
       deleteOne(StaffExp, { staffId: id }),
       deleteOne(Account, { personalId: id }),
+      updateMany(Department, { staffsId: id }, { $pull: { staffsId: id } }),
+      updateMany(Project, { staffsId: id }, { $pull: { staffsId: id } }),
     ]);
     return handleResponse(
       200,
@@ -184,118 +177,19 @@ const updateStaffExpService = async (id, payload) => {
   }
 };
 
-// const staffs = [
-// {
-//   email: "long@gmail.com",
-//   password: "long123",
-//   name: "Long",
-//   phoneNumber: "0987654321",
-//   address: "012345678",
-// },
-
-//   {
-//     email: 'tuan@gmail.com',
-//     password: 'long123',
-//     name: 'Nguyen Anh Tuan',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'dung@gmail.com',
-//     password: 'long123',
-//     name: 'Vu Quang Dung',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'thu@gmail.com',
-//     password: 'long123',
-//     name: 'Duong Minh Thu',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'tien@gmail.com',
-//     password: 'long123',
-//     name: 'Nguyen Dam Tien',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'hiep@gmail.com',
-//     password: 'long123',
-//     name: 'Pham Quang Hiep',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     address: null,
-//     email: 'rom@gmail.com',
-//     password: 'long123',
-//     name: 'Ngo Thanh Thuy',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'giang@gmail.com',
-//     password: 'long123',
-//     name: 'Nguyen Quynh Giang',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'long.phuong@gmail.com',
-//     password: 'long123',
-//     name: 'Phuong Thanh Long',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'thuy.ngo@gmail.com',
-//     password: 'long123',
-//     name: 'Ngo Thanh Thuy',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'hiep.pham@gmail.com',
-//     password: 'long123',
-//     name: 'Pham Quang Hiep',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'tien.nguyen@gmail.com',
-//     password: 'long123',
-//     name: 'Nguyen Dam Tien',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'thu.duong@gmail.com',
-//     password: 'long123',
-//     name: 'Duong Minh Thu',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'dung.vu@gmail.com',
-//     password: 'long123',
-//     name: 'Vu Quang Dung',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'tuan.nguyen@gmail.com',
-//     password: 'long123',
-//     name: 'Nguyen Anh Tuan',
-//     phoneNumber: '0123456789',
-//   },
-
-//   {
-//     email: 'admin01@gmail.com',
-//     password: 'long123',
-//     name: 'Administrater',
-//     phoneNumber: '0123456789',
-//   },
-// ];
+const updateStaffRoleService = async (id, payload) => {
+  try {
+    const { perms } = payload;
+    const record = await findLength(Role, { staffId: id }, 'id');
+    if (!record) {
+      throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
+    }
+    return handleResponse(
+      200,
+      'Update data successfully',
+      'UPDATE_DATA_SUCCESSFULLY'
+    );
+  } catch (error) {
+    throw error;
+  }
+};

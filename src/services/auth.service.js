@@ -1,14 +1,14 @@
-import { ErrorHandler, handleError, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import { Account } from '../models';
 import { findOne } from './commonQuery.service';
-import { signToken } from './tokenService';
+import { signToken } from '../helpers/token.helper';
 
 export { loginService, refreshTokenService };
 
 const loginService = async (data) => {
   try {
     const { email, password } = data;
-    const personal = await findOne(Account, { email }, 'password');
+    const personal = await findOne(Account, { email }, 'password personalId');
     if (!personal) {
       throw new ErrorHandler(404, 'Account not exists', 'INVALID');
     }
@@ -17,7 +17,7 @@ const loginService = async (data) => {
       throw new ErrorHandler(404, 'Wrong password', 'WRONG_PASSWORD');
     }
     const payload = {
-      personalId: personal.id,
+      personalId: personal.personalId,
     };
     const accessToken = signToken(
       payload,

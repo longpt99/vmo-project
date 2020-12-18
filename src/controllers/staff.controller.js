@@ -6,6 +6,7 @@ import {
   getStaffsService,
   updateStaffExpService,
   updateStaffService,
+  updateStaffRoleService,
 } from '../services/staff.service';
 export {
   getStaffList,
@@ -14,6 +15,7 @@ export {
   updateStaff,
   deleteStaff,
   updateStaffExp,
+  updateStaffRole,
 };
 
 const getStaffList = async (req, res, next) => {
@@ -27,6 +29,7 @@ const getStaffList = async (req, res, next) => {
 
 const getStaffDetail = async (req, res, next) => {
   try {
+    debugger;
     const response = await getStaffService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
@@ -64,6 +67,15 @@ const deleteStaff = async (req, res, next) => {
 const updateStaffExp = async (req, res, next) => {
   try {
     const response = await updateStaffExpService(req.params.id, req.body);
+    return res.status(response.status).json(response);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const updateStaffRole = async (req, res, next) => {
+  try {
+    const response = await updateStaffRoleService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

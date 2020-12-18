@@ -1,4 +1,4 @@
-import { ErrorHandler, handleResponse } from '../helpers/response';
+import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import {
   Customer,
   Department,
@@ -18,7 +18,7 @@ import {
   insert,
   findLength,
 } from './commonQuery.service';
-import len from '../services/arrayLength';
+import len from '../utils/arrayLength.util';
 import { Types } from 'mongoose';
 
 export {
@@ -70,7 +70,7 @@ const getProjectService = async (id) => {
 
 const createProjectService = async (payload) => {
   try {
-    const { staffsId, departmentsId, projectsId } = payload;
+    const { staffsId, departmentsId } = payload;
     await verifyProjectRequest(payload);
     const projectId = Types.ObjectId();
     await Promise.all([
@@ -81,12 +81,12 @@ const createProjectService = async (payload) => {
       updateMany(
         StaffExp,
         { staffId: { $in: staffsId } },
-        { $push: { projectsId: projectsId } }
+        { $push: { projectsId: projectId } }
       ),
       updateMany(
         Department,
         { _id: { $in: departmentsId } },
-        { $push: { projectsId: projectsId } }
+        { $push: { projectsId: projectId } }
       ),
     ]);
     return handleResponse(
@@ -175,13 +175,12 @@ const verifyProjectRequest = async (payload) => {
     techStacksId = [],
     projectTypesId = [],
     departmentsId = [],
-    projectStatusId = {},
+    projectStatusId,
     staffsId = [],
     customersId = [],
   } = payload;
 
-  const projectRecord = findOne(Project, { name }, 'id');
-
+  const projectRecord = await findOne(Project, { name }, 'id');
   if (projectRecord) {
     throw new ErrorHandler(404, 'Project already exists', 'INVALID');
   }
@@ -212,12 +211,6 @@ const verifyProjectRequest = async (payload) => {
     'id'
   );
 
-  const projectStatusAsync = findLength(
-    ProjectStatus,
-    { _id: projectStatusId, status: 'active' },
-    'id'
-  );
-
   const lenTechStacksRecord = await techStacksAsync;
   if (lenTechStacksRecord < len(techStacksId)) {
     throw new ErrorHandler(400, 'Invalid tech stack', 'INVALID');
@@ -243,8 +236,19 @@ const verifyProjectRequest = async (payload) => {
     throw new ErrorHandler(400, 'Invalid customer', 'INVALID');
   }
 
-  const projectStatusRecord = await projectStatusAsync;
-  if (projectStatusRecord < Object.keys(projectStatusId).length) {
-    throw new ErrorHandler(400, 'Invalid project status', 'INVALID');
+  // const projectStatusRecord = await projectStatusAsync;
+  // if (projectStatusRecord < Object.keys(projectStatusId).length) {
+  //   throw new ErrorHandler(400, 'Invalid project status', 'INVALID');
+  // }
+
+  if (projectStatusId) {
+    const lenProjectStatusRecord = await findOne(
+      ProjectStatus,
+      { _id: projectStatusId, status: 'active' },
+      'id'
+    );
+    if (!lenProjectStatusRecord) {
+      throw new ErrorHandler(400, 'Invalid project status', 'INVALID');
+    }
   }
 };

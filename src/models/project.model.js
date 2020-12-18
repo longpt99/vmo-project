@@ -9,7 +9,10 @@ const ProjectSchema = new Schema(
     departmentsId: [{ type: Schema.Types.ObjectId, ref: 'Department' }],
     staffsId: [{ type: Schema.Types.ObjectId, ref: 'Staff' }],
     customersId: [{ type: Schema.Types.ObjectId, ref: 'Customer' }],
-    projectStatusId: { type: Schema.Types.ObjectId, ref: 'ProjectStatus' },
+    projectStatusId: {
+      type: Schema.Types.ObjectId,
+      ref: 'ProjectStatus',
+    },
   },
   {
     timestamps: true,

@@ -4,12 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "node src/app.js",
     "dev": "webpack -w --config ./src/config/webpack/webpack.dev.js",
-    "server": "nodemon --inspect --exec babel-node server.js",
+    "server": "nodemon --inspect --exec  babel-node server.js",
     "test": "mocha src/tests/*.test.js --require @babel/register --exit"
   },
   "dependencies": {
-    "ajv": "^6.12.6",
+    "ajv": "^7.0.1",
     "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",

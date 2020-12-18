@@ -8,3 +8,5 @@ export { default as TechStack } from './techStack.model';
 export { default as Project } from './project.model';
 export { default as ProjectType } from './projectType.model';
 export { default as ProjectStatus } from './projectStatus.model';
+export { default as Permission } from './permission.model';
+export { default as Role } from './role.model';

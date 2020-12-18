@@ -1,5 +1,4 @@
-import logger from './logger';
-export { ErrorHandler, handleResponse, handleError };
+export { ErrorHandler, handleResponse };
 
 class ErrorHandler extends Error {
   constructor(status, message, code) {
@@ -9,14 +8,6 @@ class ErrorHandler extends Error {
     this.code = code;
   }
 }
-
-const handleError = (error) => {
-  logger(error);
-  if (error instanceof ErrorHandler) {
-    return error;
-  }
-  throw error;
-};
 
 const handleResponse = (status, message, code, data = null) => {
   return { status, message, code, data };

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { Customer } from '../models';
+import { Customer, Project } from '../models';
 import {
   getCustomerService,
   getCustomersService,
@@ -8,28 +8,28 @@ import {
   deleteCustomerService,
 } from '../services/customer.service';
 
-export default () => {};
-
 describe('CUSTOMER TESTING', () => {
   let customerFind;
   let customerCreate;
-  let customerDelete;
+  let customerFindMany;
 
   beforeEach(() => {
     customerFind = sinon.stub(Customer, 'findOne');
     customerCreate = sinon.stub(Customer, 'create');
-    customerDelete = sinon.stub(Customer, 'deleteOne');
+    customerFindMany = sinon.stub(Customer, 'find');
   });
 
   afterEach(() => {
     customerFind.restore();
     customerCreate.restore();
-    customerDelete.restore();
+    customerFindMany.restore();
   });
 
   it('Should return array data', async () => {
+    customerFindMany.resolves([]);
     const result = await getCustomersService();
     expect(result.data).to.be.an('array');
+    expect(result.status).to.equal(200);
   });
 
   it('Should return one customer', async () => {
@@ -53,7 +53,6 @@ describe('CUSTOMER TESTING', () => {
       const account = { name: 'Long' };
       customerFind.resolves(account);
       const result = await createCustomerService(account);
-      expect(result.error).to.equal('numberA must be a number');
     } catch (error) {
       expect(error.message).to.equal('Customer already exists');
     }
@@ -62,8 +61,7 @@ describe('CUSTOMER TESTING', () => {
   it('Should return success when customer was deleted', async () => {
     const account = { name: 'Long' };
     customerFind.resolves(account);
-    customerDelete.resolves(account);
-    const result = await deleteCustomerService(account);
+    const result = await deleteCustomerService();
     expect(result.message).to.equal('Delete data successfully');
   });
 });

@@ -11,16 +11,15 @@ export {
 
 const findOne = async (model, filter, projection = '', populate) => {
   try {
-    return await model.findOne(filter, projection);
-    // .populate(populate);
+    return await model.findOne(filter, projection).populate(populate);
   } catch (error) {
     throw error;
   }
 };
 
-const findMany = async (model, filter, projection = '', populate) => {
+const findMany = async (model, filter, projection = '') => {
   try {
-    return await model.find(filter, projection).populate(populate);
+    return await model.find(filter, projection);
   } catch (error) {
     throw error;
   }

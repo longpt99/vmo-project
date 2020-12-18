@@ -13,18 +13,15 @@ export default () => {};
 describe('DEPARTMENT TESTING', () => {
   let departmentFind;
   let departmentCreate;
-  let departmentDelete;
 
   beforeEach(() => {
     departmentFind = sinon.stub(Department, 'findOne');
     departmentCreate = sinon.stub(Department, 'create');
-    departmentDelete = sinon.stub(Department, 'deleteOne');
   });
 
   afterEach(() => {
     departmentFind.restore();
     departmentCreate.restore();
-    departmentDelete.restore();
   });
 
   it('Should return array data', async () => {
@@ -53,7 +50,6 @@ describe('DEPARTMENT TESTING', () => {
       const account = { name: 'Long' };
       departmentFind.resolves(account);
       const result = await createDepartmentService(account);
-      expect(result.error).to.equal('numberA must be a number');
     } catch (error) {
       expect(error.message).to.equal('Department already exists');
     }
@@ -62,8 +58,7 @@ describe('DEPARTMENT TESTING', () => {
   it('Should return success when Department was deleted', async () => {
     const account = { name: 'Long' };
     departmentFind.resolves(account);
-    departmentDelete.resolves(account);
-    const result = await deleteDepartmentService(account);
+    const result = await deleteDepartmentService();
     expect(result.message).to.equal('Delete data successfully');
   });
 });
