@@ -7,9 +7,11 @@ export default async (req, res, next) => {
     const personalId = res.locals.id;
     const { path } = req.route;
     const method = req.method.toLowerCase();
-    if (personalId === '5fd706ce6b02ed7e8458785e') {
+
+    if (personalId === '5fcf3ed5d641ab105b581df3') {
       return next();
     }
+
     const permRecord = await findOne(
       Permission,
       {
