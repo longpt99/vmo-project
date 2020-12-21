@@ -19,31 +19,34 @@ const getSearchResult = async (query) => {
     } = query;
     const perPage = Number(limit);
     const start = (Number(page) - 1) * perPage;
-    const record = await model(capitalizeFirstLetter(modelName))
-      .find(
-        {
-          $or: [
-            { name: { $regex: name || '', $options: 'i', $exists: true } },
-            {
-              name: { $exists: false },
+    const [record, totalDoc] = await Promise.all([
+      model(capitalizeFirstLetter(modelName))
+        .find(
+          {
+            $or: [
+              { name: { $regex: name || '', $options: 'i', $exists: true } },
+              {
+                name: { $exists: false },
+              },
+            ],
+            createdAt: {
+              $gte: from ? new Date(from) : new Date('01/01/1970'),
+              $lt: to ? new Date(to).setHours(23, 59, 59) : new Date(),
             },
-          ],
-          createdAt: {
-            $gte: from ? new Date(from) : new Date('01/01/1970'),
-            $lt: to ? new Date(to).setHours(23, 59, 59) : new Date(),
           },
-        },
-        filter
-      )
-      .sort([[sortBy, orderBy]])
-      .skip(start)
-      .limit(perPage);
+          filter
+        )
+        .sort([[sortBy, orderBy]])
+        .skip(start)
+        .limit(perPage),
+      model(capitalizeFirstLetter(modelName)).countDocuments(),
+    ]);
 
     return handleResponse(
       200,
       'Get result successfully',
       'GET_RESULT_SUCCESSFULLY',
-      { record, numberDoc: record.length }
+      { record, numberDoc: totalDoc }
     );
   } catch (error) {
     throw error;
