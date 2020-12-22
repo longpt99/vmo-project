@@ -1,5 +1,5 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
-import { Department, Project, TechStack } from '../models';
+import { Department, Project, StaffExp, TechStack } from '../models';
 import {
   findOne,
   findMany,
@@ -78,7 +78,7 @@ const updateTechStackService = async (id, payload) => {
     }
     const { name } = payload;
     const techStackRecord = await findOne(TechStack, { name }, 'id');
-    if (!techStackRecord) {
+    if (techStackRecord && techStackRecord._id !== id) {
       throw new ErrorHandler(
         404,
         `Tech stack "${name}" already exists`,
@@ -113,6 +113,11 @@ const deleteTechStackService = async (id) => {
         Department,
         { techStacksId: id },
         { $pull: { techStacksId: id } }
+      ),
+      updateMany(
+        StaffExp,
+        { 'skills.techStackId': id },
+        { $pull: { skills: { techStackId: id } } }
       ),
     ]);
     return handleResponse(
