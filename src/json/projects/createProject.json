@@ -1,11 +1,15 @@
 {
+  "title": "Project",
+  "description": "Create new project",
   "type": "object",
   "required": [
     "name",
     "description",
     "projectTypesId",
     "customersId",
-    "projectStatusId"
+    "projectStatusId",
+    "staffsId",
+    "departmentsId"
   ],
   "properties": {
     "name": {
@@ -38,8 +42,15 @@
         "type": "string"
       }
     },
+    "departmentsId": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "projectStatusId": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": false
 }

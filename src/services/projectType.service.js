@@ -53,11 +53,7 @@ const createProjectTypeService = async (payload) => {
     const { name } = payload;
     const record = await findOne(ProjectType, { name }, 'id');
     if (record) {
-      throw new ErrorHandler(
-        404,
-        `Project type "${name}" already exists`,
-        'INVALID'
-      );
+      throw new ErrorHandler(404, `Project type already exists`, 'INVALID');
     }
     await insert(ProjectType, payload);
     return handleResponse(
@@ -79,11 +75,7 @@ const updateProjectTypeService = async (id, payload) => {
     const { name } = payload;
     const projectTypeRecord = await findOne(ProjectType, { name }, 'id');
     if (projectTypeRecord && projectTypeRecord.id !== id) {
-      throw new ErrorHandler(
-        404,
-        `Project type "${name}" already exists`,
-        'INVALID'
-      );
+      throw new ErrorHandler(404, `Project type already exists`, 'INVALID');
     }
     await updateOne(ProjectType, { _id: id }, { $set: payload });
     return handleResponse(

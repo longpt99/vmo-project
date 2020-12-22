@@ -53,11 +53,7 @@ const createTechStackService = async (payload) => {
     const { name } = payload;
     const record = await findOne(TechStack, { name }, 'id');
     if (record) {
-      throw new ErrorHandler(
-        404,
-        `Tech stack "${name}" already exists`,
-        'INVALID'
-      );
+      throw new ErrorHandler(404, `Tech stack already exists`, 'INVALID');
     }
     await insert(TechStack, payload);
     return handleResponse(
@@ -79,11 +75,7 @@ const updateTechStackService = async (id, payload) => {
     const { name } = payload;
     const techStackRecord = await findOne(TechStack, { name }, 'id');
     if (techStackRecord && techStackRecord.id !== id) {
-      throw new ErrorHandler(
-        404,
-        `Tech stack "${name}" already exists`,
-        'INVALID'
-      );
+      throw new ErrorHandler(404, `Tech stack already exists`, 'INVALID');
     }
     await updateOne(TechStack, { _id: id }, { $set: payload });
     return handleResponse(

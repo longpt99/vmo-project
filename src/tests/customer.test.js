@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { Customer, Project } from '../models';
+import { Customer } from '../models';
 import {
   getCustomerService,
   getCustomersService,

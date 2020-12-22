@@ -1,4 +1,4 @@
-import { StaffExp } from '../models';
+import { Staff, StaffExp, TechStack } from '../models';
 import {
   createStaffService,
   deleteStaffService,
@@ -16,6 +16,7 @@ export {
   deleteStaff,
   updateStaffExp,
   updateStaffRole,
+  getStaffSearch,
 };
 
 const getStaffList = async (req, res, next) => {
@@ -79,5 +80,54 @@ const updateStaffRole = async (req, res, next) => {
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);
+  }
+};
+
+const getStaffSearch = async (req, res) => {
+  try {
+    const { techStack, level } = req.query;
+    const techStackRecord = await TechStack.findOne({ name: techStack }, 'id');
+    const staffExpRecord = await StaffExp.aggregate([
+      {
+        $match: {
+          'skills.techStackId': techStackRecord._id,
+          'skills.level': level ? level : { $nin: [1] },
+        },
+      },
+      { $unwind: '$skills' },
+      {
+        $match: {
+          'skills.techStackId': techStackRecord._id,
+          'skills.level': level ? level : { $nin: [1] },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          staffsId: { $push: '$staffId' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          staffsId: 1,
+        },
+      },
+    ]);
+
+    const staffRecord = await Staff.find(
+      {
+        _id: {
+          $in:
+            staffExpRecord[0] && staffExpRecord[0].staffsId.length > 0
+              ? staffExpRecord[0].staffsId
+              : [],
+        },
+      },
+      'name'
+    );
+    res.json(staffRecord);
+  } catch (error) {
+    res.json(error.message);
   }
 };

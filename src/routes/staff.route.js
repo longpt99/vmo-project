@@ -7,6 +7,7 @@ import {
   updateStaff,
   updateStaffExp,
   updateStaffRole,
+  getStaffSearch,
 } from '../controllers/staff.controller';
 import { bearerToken, verifyRequest } from '../middlewares';
 
@@ -15,6 +16,8 @@ const router = express.Router();
 router.use('/staffs', bearerToken);
 
 router.route('/staffs').get(getStaffList).post(verifyRequest, createStaff);
+
+router.route('/staffs/search').get(getStaffSearch);
 
 router
   .route('/staffs/:id')

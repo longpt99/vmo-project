@@ -1,4 +1,6 @@
 {
+  "title": "Tech stack",
+  "description": "Update a specific tech stack",
   "type": "object",
   "properties": {
     "name": {

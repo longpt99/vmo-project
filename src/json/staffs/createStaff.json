@@ -31,7 +31,10 @@
       "type": "string"
     },
     "languages": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "certs": {
       "type": "array",

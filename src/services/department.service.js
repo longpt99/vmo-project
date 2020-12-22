@@ -81,7 +81,7 @@ const updateDepartmentService = async (id, payload) => {
     }
 
     if (update) {
-      await compareDepartmentData(update);
+      await compareDepartmentData(update, id);
       await updateOne(Department, { _id: id }, { $set: update });
       await updateMany(
         Project,
@@ -132,12 +132,12 @@ const deleteDepartmentService = async (id) => {
   }
 };
 
-const compareDepartmentData = async (payload) => {
+const compareDepartmentData = async (payload, id) => {
   try {
     const { name, staffsId = [], projectsId = [], techStacksId = [] } = payload;
-
+    console.log(id);
     const deptRecord = await findOne(Department, { name }, 'id');
-    if (deptRecord) {
+    if (deptRecord && deptRecord.id !== id) {
       throw new ErrorHandler(404, 'Department already exists', 'INVALID');
     }
 

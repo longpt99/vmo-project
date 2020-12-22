@@ -1,4 +1,6 @@
 {
+  "title": "Department",
+  "description": "Update a department detail",
   "type": "object",
   "properties": {
     "update": {
@@ -28,7 +30,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "remove": {
       "type": "object",
@@ -39,7 +42,9 @@
             "type": "string"
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }

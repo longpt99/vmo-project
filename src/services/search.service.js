@@ -8,7 +8,7 @@ const getSearchResult = async (query) => {
   try {
     const {
       orderBy,
-      page = 1,
+      page,
       limit,
       sortBy,
       modelName,
@@ -17,30 +17,33 @@ const getSearchResult = async (query) => {
       from,
       to,
     } = query;
-    const perPage = Number(limit);
-    const start = (Number(page) - 1) * perPage;
-    console.log(perPage, start);
+
+    const pageNum = parseInt(page) < 1 || !page ? 0 : parseInt(page) - 1;
+    const perPage = parseInt(limit);
+    const start = pageNum * perPage;
+
+    console.log(start, perPage);
 
     const [record, totalDoc] = await Promise.all([
       model(capitalizeFirstLetter(modelName))
         .find(
           {
-            // $or: [
-            //   { name: { $regex: name || '', $options: 'i', $exists: true } },
-            //   {
-            //     name: { $exists: false },
-            //   },
-            // ],
-            // createdAt: {
-            //   $gte: from ? new Date(from) : new Date('01/01/1970'),
-            //   $lt: to ? new Date(to).setHours(23, 59, 59) : new Date(),
-            // },
+            $or: [
+              { name: { $regex: name || '', $options: 'i', $exists: true } },
+              {
+                name: { $exists: false },
+              },
+            ],
+            createdAt: {
+              $gte: from ? new Date(from) : new Date('01/01/1970'),
+              $lt: to ? new Date(to).setHours(23, 59, 59) : new Date(),
+            },
           },
           filter
         )
-        .skip(start)
+        .sort(sortBy && orderBy && [[sortBy, orderBy]])
         .limit(perPage)
-        .sort(),
+        .skip(start),
       model(capitalizeFirstLetter(modelName)).countDocuments(),
     ]);
 

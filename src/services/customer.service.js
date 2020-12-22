@@ -53,7 +53,7 @@ const createCustomerService = async (payload) => {
     const { name } = payload;
     const record = await findOne(Customer, { name }, 'id');
     if (record) {
-      throw new ErrorHandler(404, `Customer ${name} already exists`, 'INVALID');
+      throw new ErrorHandler(404, `Customer already exists`, 'INVALID');
     }
     await insert(Customer, payload);
     return handleResponse(

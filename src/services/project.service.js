@@ -107,7 +107,7 @@ const updateProjectService = async (id, payload) => {
       throw new ErrorHandler(404, 'Project not exists', 'INVALID');
     }
     if (update) {
-      await verifyProjectRequest(update);
+      await verifyProjectRequest(update, id);
       await updateOne(Project, { _id: id }, { $set: update });
       await updateMany(
         StaffExp,
@@ -169,7 +169,7 @@ const deleteProjectService = async (id) => {
   }
 };
 
-const verifyProjectRequest = async (payload) => {
+const verifyProjectRequest = async (payload, id) => {
   const {
     name,
     techStacksId = [],
@@ -181,7 +181,7 @@ const verifyProjectRequest = async (payload) => {
   } = payload;
 
   const projectRecord = await findOne(Project, { name }, 'id');
-  if (projectRecord) {
+  if (projectRecord && projectRecord.id !== id) {
     throw new ErrorHandler(404, 'Project already exists', 'INVALID');
   }
 

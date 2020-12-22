@@ -1,38 +1,92 @@
 {
+  "title": "Project",
+  "description": "Update a project detail",
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
+    "update": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "techStacksId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projectTypesId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "staffsId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "customersId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "departmentsId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projectStatusId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
-    "description": {
-      "type": "string"
-    },
-    "techStacksId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "projectTypesId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "staffsId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "customersId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "projectStatusId": {
-      "type": "string"
+    "remove": {
+      "type": "object",
+      "properties": {
+        "techStacksId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projectTypesId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "staffsId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "customersId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "departmentsId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projectStatusId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }
