@@ -74,7 +74,7 @@ const updateCustomerService = async (id, payload) => {
     }
     const { name } = payload;
     const customerRecord = await findOne(Customer, { name }, 'id');
-    if (customerRecord && customerRecord._id !== id) {
+    if (customerRecord && customerRecord.id !== id) {
       throw new ErrorHandler(404, `Customer ${name} already exists`, 'INVALID');
     }
     await updateOne(Customer, { _id: id }, { $set: payload });

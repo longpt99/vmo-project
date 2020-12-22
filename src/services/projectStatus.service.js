@@ -78,7 +78,7 @@ const updateProjectStatusService = async (id, payload) => {
     }
     const { name } = payload;
     const projectStatusRecord = await findOne(ProjectStatus, { name }, 'id');
-    if (projectStatusRecord && projectStatusRecord._id !== id) {
+    if (projectStatusRecord && projectStatusRecord.id !== id) {
       throw new ErrorHandler(
         404,
         `Project status "${name}" already exists`,

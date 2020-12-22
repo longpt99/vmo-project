@@ -78,7 +78,7 @@ const updateTechStackService = async (id, payload) => {
     }
     const { name } = payload;
     const techStackRecord = await findOne(TechStack, { name }, 'id');
-    if (techStackRecord && techStackRecord._id !== id) {
+    if (techStackRecord && techStackRecord.id !== id) {
       throw new ErrorHandler(
         404,
         `Tech stack "${name}" already exists`,
