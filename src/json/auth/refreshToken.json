@@ -1,4 +1,6 @@
 {
+  "title": "Authentication",
+  "description": "Refresh token",
   "type": "object",
   "required": ["accessToken", "refreshToken"],
   "properties": {
@@ -8,5 +10,6 @@
     "refreshToken": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": false
 }

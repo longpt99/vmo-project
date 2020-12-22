@@ -1,5 +1,13 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
-import { Account, Department, Staff, StaffExp, TechStack } from '../models';
+import {
+  Account,
+  Department,
+  Permission,
+  Role,
+  Staff,
+  StaffExp,
+  TechStack,
+} from '../models';
 import {
   findOne,
   findMany,
@@ -179,11 +187,48 @@ const updateStaffExpService = async (id, payload) => {
 
 const updateStaffRoleService = async (id, payload) => {
   try {
-    const { perms } = payload;
+    const { permsId } = payload;
+    const permsObjectId = permsId.map((item) => Types.ObjectId(item));
+    const permsRecord = await Permission.aggregate([
+      //  Always match first to reduce results
+      {
+        $match: {
+          'routes._id': { $in: permsObjectId },
+        },
+      },
+      // Unwind to de-normalize the array elements as documents
+      { $unwind: '$routes' },
+
+      // Match to "filter" the array content
+      {
+        $match: {
+          'routes._id': { $in: permsObjectId },
+        },
+      },
+      // Group back to a document with the array
+      {
+        $group: {
+          _id: null,
+          routes: { $push: '$routes._id' },
+        },
+      },
+      // Optionally project to remove the "_id" field from results
+      {
+        $project: {
+          _id: 0,
+          routes: 1,
+        },
+      },
+    ]);
+
+    if (permsRecord[0].routes.length !== permsObjectId.length) {
+      throw new ErrorHandler(404, 'Permission error', 'INVALID');
+    }
     const record = await findLength(Role, { staffId: id }, 'id');
     if (!record) {
-      throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
+      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
     }
+    await updateOne(Role, { staffId: id }, { $set: payload });
     return handleResponse(
       200,
       'Update data successfully',

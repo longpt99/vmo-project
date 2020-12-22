@@ -23,27 +23,44 @@
       "type": "string"
     },
     "languages": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "certs": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "rolesId": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "projectsId": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "skills": {
       "type": "array",
-      "properties": {
-        "techStackId": {
-          "type": "string"
+      "items": {
+        "type": "object",
+        "properties": {
+          "techStackId": {
+            "type": "string"
+          },
+          "exp": {
+            "type": "string"
+          }
         },
-        "exp": {
-          "type": "string"
-        }
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

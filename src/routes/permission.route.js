@@ -1,26 +1,23 @@
 import express from 'express';
 import {
-  getProjectTypes,
-  createProjectType,
-  getProjectTypeDetail,
-  updateProjectType,
-  deleteProjectType,
-} from '../controllers/projectType.controller';
+  getPermissions,
+  getPermission,
+  createPermission,
+  updatePermission,
+  deletePermission,
+} from '../controllers/permission.controller';
 import { bearerToken, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
-router.use('/project-types', bearerToken);
+router.use('/permissions', bearerToken);
+
+router.route('/permissions').get(getPermissions).post(createPermission);
 
 router
-  .route('/project-types')
-  .get(getProjectTypes)
-  .post(verifyRequest, createProjectType);
-
-router
-  .route('/project-types/:id')
-  .get(getProjectTypeDetail)
-  .put(verifyRequest, updateProjectType)
-  .delete(deleteProjectType);
+  .route('/permissions/:id')
+  .get(getPermission)
+  .put(updatePermission)
+  .delete(deletePermission);
 
 export default router;

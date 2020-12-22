@@ -13,7 +13,6 @@ export default async (req, res, next) => {
         'utf8'
       )
     );
-
     const schemaPath = JSON.parse(
       await fs.readFile(
         path.join(__dirname, `../${filePath[method][routePath]}`),

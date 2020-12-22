@@ -1,4 +1,6 @@
 {
+  "title": "Project type",
+  "description": "Create a new project type",
   "type": "object",
   "required": ["name", "description", "status", "priorityNumber"],
   "properties": {
@@ -9,10 +11,13 @@
       "type": "string"
     },
     "status": {
-      "type": "string"
+      "type": "string",
+      "enum": ["active", "inactive"]
     },
     "priorityNumber": {
-      "type": "number"
+      "type": "number",
+      "enum": [1, 2, 3, 4, 5]
     }
-  }
+  },
+  "additionalProperties": false
 }

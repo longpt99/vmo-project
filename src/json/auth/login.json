@@ -1,4 +1,6 @@
 {
+  "title": "Authentication",
+  "description": "Login",
   "type": "object",
   "required": ["email", "password"],
   "properties": {
@@ -8,5 +10,6 @@
     "password": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": false
 }

@@ -12,6 +12,8 @@
   },
   "PUT": {
     "/staffs/:id": "/json/staffs/updateStaff.json",
+    "/staffs/:id/exp": "/json/staffs/updateStaffExp.json",
+    "/staffs/:id/role": "/json/staffs/updateStaffRole.json",
     "/departments/:id": "/json/departments/updateDepartment.json",
     "/customers/:id": "/json/customers/updateCustomer.json",
     "/tech-stacks/:id": "/json/techStacks/updateTechStack.json",

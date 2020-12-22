@@ -1,4 +1,6 @@
 {
+  "title": "Project type",
+  "description": "Update a specific project type",
   "type": "object",
   "properties": {
     "name": {
@@ -8,10 +10,13 @@
       "type": "string"
     },
     "status": {
-      "type": "string"
+      "type": "string",
+      "enum": ["active", "inactive"]
     },
     "priorityNumber": {
-      "type": "number"
+      "type": "number",
+      "enum": [1, 2, 3, 4, 5]
     }
-  }
+  },
+  "additionalProperties": false
 }

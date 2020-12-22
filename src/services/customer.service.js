@@ -53,7 +53,7 @@ const createCustomerService = async (payload) => {
     const { name } = payload;
     const record = await findOne(Customer, { name }, 'id');
     if (record) {
-      throw new ErrorHandler(404, 'Customer already exists', 'INVALID');
+      throw new ErrorHandler(404, `Customer ${name} already exists`, 'INVALID');
     }
     await insert(Customer, payload);
     return handleResponse(
@@ -71,6 +71,11 @@ const updateCustomerService = async (id, payload) => {
     const record = await findOne(Customer, { _id: id }, 'id');
     if (!record) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
+    }
+    const { name } = payload;
+    const customerRecord = await findOne(Customer, { name }, 'id');
+    if (customerRecord) {
+      throw new ErrorHandler(404, `Customer ${name} already exists`, 'INVALID');
     }
     await updateOne(Customer, { _id: id }, { $set: payload });
     return handleResponse(

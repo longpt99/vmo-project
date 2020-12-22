@@ -58,7 +58,7 @@ const getDepartmentService = async (id) => {
 
 const createDepartmentService = async (payload) => {
   try {
-    await verifyDepartmentRequest(payload);
+    await compareDepartmentData(payload);
     await insert(Department, payload);
     const response = handleResponse(
       200,
@@ -81,7 +81,7 @@ const updateDepartmentService = async (id, payload) => {
     }
 
     if (update) {
-      await verifyDepartmentRequest(update);
+      await compareDepartmentData(update);
       await updateOne(Department, { _id: id }, { $set: update });
       await updateMany(
         Project,
@@ -132,7 +132,7 @@ const deleteDepartmentService = async (id) => {
   }
 };
 
-const verifyDepartmentRequest = async (payload) => {
+const compareDepartmentData = async (payload) => {
   try {
     const { name, staffsId = [], projectsId = [], techStacksId = [] } = payload;
 

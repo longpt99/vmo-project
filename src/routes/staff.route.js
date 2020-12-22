@@ -6,6 +6,7 @@ import {
   getStaffList,
   updateStaff,
   updateStaffExp,
+  updateStaffRole,
 } from '../controllers/staff.controller';
 import { bearerToken, verifyRequest } from '../middlewares';
 
@@ -21,7 +22,7 @@ router
   .put(verifyRequest, updateStaff)
   .delete(deleteStaff);
 
-router.route('/staffs/:id/exp').put(updateStaffExp);
-router.route('/staffs/:id/roles').put(updateStaffExp);
+router.route('/staffs/:id/exp').put(verifyRequest, updateStaffExp);
+router.route('/staffs/:id/roles').put(verifyRequest, updateStaffRole);
 
 export default router;

@@ -1,4 +1,6 @@
 {
+  "title": "Tech stack",
+  "description": "Create a new tech stack",
   "type": "object",
   "required": ["name", "description", "status"],
   "properties": {
@@ -9,7 +11,9 @@
       "type": "string"
     },
     "status": {
-      "type": "string"
+      "type": "string",
+      "enum": ["active", "inactive"]
     }
-  }
+  },
+  "additionalProperties": false
 }

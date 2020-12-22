@@ -34,21 +34,32 @@
       "type": "array"
     },
     "certs": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "projectsId": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "skills": {
       "type": "array",
-      "properties": {
-        "techStackId": {
-          "type": "string"
+      "items": {
+        "type": "object",
+        "properties": {
+          "techStackId": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          }
         },
-        "exp": {
-          "type": "string"
-        }
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

@@ -52,7 +52,10 @@ const updatePermission = async (req, res, next) => {
 
 const deletePermission = async (req, res, next) => {
   try {
-    const response = await deletePermissionService(req.params.id);
+    const response = await deletePermissionService(
+      req.params.id,
+      res.locals.id
+    );
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

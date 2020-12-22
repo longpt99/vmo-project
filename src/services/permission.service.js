@@ -1,5 +1,5 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
-import { Department, Project, Permission } from '../models';
+import { Permission, Role } from '../models';
 import {
   findOne,
   findMany,
@@ -34,6 +34,9 @@ const getPermissionsService = async () => {
 const getPermissionService = async (id) => {
   try {
     const record = await findOne(Permission, { _id: id });
+    if (!record) {
+      throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
+    }
     return handleResponse(
       200,
       'Get data successfully',
@@ -49,9 +52,11 @@ const createPermissionService = async (payload) => {
   try {
     const { name } = payload;
     const record = await findOne(Permission, { name }, 'id');
+
     if (record) {
-      throw new ErrorHandler(404, 'Tech stack already exists', 'INVALID');
+      throw new ErrorHandler(404, 'Permission already exists', 'INVALID');
     }
+
     await insert(Permission, payload);
     return handleResponse(
       200,
@@ -67,7 +72,7 @@ const updatePermissionService = async (id, payload) => {
   try {
     const record = await findOne(Permission, { _id: id });
     if (!record) {
-      throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
+      throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
     await updateOne(Permission, { _id: id }, { $set: payload });
     return handleResponse(
@@ -80,29 +85,23 @@ const updatePermissionService = async (id, payload) => {
   }
 };
 
-const deletePermissionService = async (id) => {
+const deletePermissionService = async (id, staffId) => {
   try {
-    const record = await findOne(Permission, { _id: id });
+    const record = await findOne(Permission, { _id: id }, 'routes._id');
+    const routesId = [];
+    record.routes.forEach((item) => routesId.push(item._id));
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
     await Promise.all([
       deleteOne(Permission, { _id: id }),
-      updateMany(
-        Project,
-        { PermissionsId: id },
-        { $pull: { PermissionsId: id } }
-      ),
-      updateMany(
-        Department,
-        { PermissionsId: id },
-        { $pull: { PermissionsId: id } }
-      ),
+      updateMany(Role, { staffId }, { $pull: { permsId: { $in: routesId } } }),
     ]);
     return handleResponse(
       200,
       'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
+      'DELETE_DATA_SUCCESSFULLY',
+      { routesId }
     );
   } catch (error) {
     throw error;
