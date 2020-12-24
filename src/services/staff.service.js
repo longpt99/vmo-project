@@ -119,7 +119,7 @@ const createStaffService = async (payload) => {
         phoneNumber,
         address,
       }),
-      insert(StaffExp, { staffId, skills, projectsId }),
+      insert(StaffExp, { staffId, skills }),
     ]);
     return handleResponse(
       200,

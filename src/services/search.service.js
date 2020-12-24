@@ -36,7 +36,7 @@ const getSearchResult = async (query) => {
               $lt: to ? new Date(to).setHours(23, 59, 59) : new Date(),
             },
           },
-          filter
+          { __v: 0, createdAt: 0, updatedAt: 0 }
         )
         .sort(sortBy && orderBy && [[sortBy, orderBy]])
         .limit(perPage)
