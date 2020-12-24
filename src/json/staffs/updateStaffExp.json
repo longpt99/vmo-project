@@ -1,4 +1,6 @@
 {
+  "title": "Staff experience",
+  "description": "Update staff exp detail",
   "type": "object",
   "properties": {
     "skills": {
@@ -10,7 +12,8 @@
             "type": "string"
           },
           "level": {
-            "type": "string"
+            "type": "string",
+            "enum": ["fresher", "junior", "senior"]
           }
         },
         "additionalProperties": false

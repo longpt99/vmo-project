@@ -17,6 +17,7 @@ export {
   updateStaffExp,
   updateStaffRole,
   getStaffSearch,
+  getStaffReport,
 };
 
 const getStaffList = async (req, res, next) => {
@@ -30,7 +31,6 @@ const getStaffList = async (req, res, next) => {
 
 const getStaffDetail = async (req, res, next) => {
   try {
-    debugger;
     const response = await getStaffService(req.params.id);
     return res.status(response.status).json(response);
   } catch (error) {
@@ -49,7 +49,7 @@ const createStaff = async (req, res, next) => {
 
 const updateStaff = async (req, res, next) => {
   try {
-    const response = await updateStaffService(req.params.id);
+    const response = await updateStaffService(req.params.id, req.body);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);
@@ -127,6 +127,29 @@ const getStaffSearch = async (req, res) => {
       'name'
     );
     res.json(staffRecord);
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+const getStaffReport = async (req, res) => {
+  try {
+    const techStackRecord = await TechStack.aggregate([
+      { $match: {} },
+      {
+        $group: {
+          _id: null,
+          techStacksId: { $push: '$_id' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+
+    res.json(techStackRecord);
   } catch (error) {
     res.json(error.message);
   }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { bearerToken, verifyRequest } from '../middlewares';
+import { bearerToken, roleHandler, verifyRequest } from '../middlewares';
 import {
   getCustomerList,
   createCustomer,
@@ -14,13 +14,13 @@ router.use('/customers', bearerToken);
 
 router
   .route('/customers')
-  .get(getCustomerList)
-  .post(verifyRequest, createCustomer);
+  .get(roleHandler, getCustomerList)
+  .post(roleHandler, verifyRequest, createCustomer);
 
 router
   .route('/customers/:id')
-  .get(getCustomerDetail)
-  .put(verifyRequest, updateCustomer)
-  .delete(deleteCustomer);
+  .get(roleHandler, getCustomerDetail)
+  .put(roleHandler, verifyRequest, updateCustomer)
+  .delete(roleHandler, deleteCustomer);
 
 export default router;

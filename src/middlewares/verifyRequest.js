@@ -21,6 +21,7 @@ export default async (req, res, next) => {
     );
     const ajv = new Ajv({ allErrors: true });
     const validate = ajv.compile(schemaPath);
+
     const valid = validate(req.body);
     if (!valid) {
       throw new ErrorHandler(400, validate.errors, 'INVALID_INPUT');

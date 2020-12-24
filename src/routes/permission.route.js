@@ -6,18 +6,21 @@ import {
   updatePermission,
   deletePermission,
 } from '../controllers/permission.controller';
-import { bearerToken, verifyRequest } from '../middlewares';
+import { bearerToken, roleHandler, verifyRequest } from '../middlewares';
 
 const router = express.Router();
 
 router.use('/permissions', bearerToken);
 
-router.route('/permissions').get(getPermissions).post(createPermission);
+router
+  .route('/permissions')
+  .get(roleHandler, getPermissions)
+  .post(roleHandler, createPermission);
 
 router
   .route('/permissions/:id')
-  .get(getPermission)
-  .put(updatePermission)
-  .delete(deletePermission);
+  .get(roleHandler, getPermission)
+  .put(roleHandler, updatePermission)
+  .delete(roleHandler, deletePermission);
 
 export default router;

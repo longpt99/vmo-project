@@ -10,7 +10,7 @@ const StaffSchema = new Schema(
     identityNumber: String,
     languages: [String],
     certs: [String],
-    rolesId: [Schema.Types.ObjectId],
+    permsId: [Schema.Types.ObjectId],
   },
   {
     timestamps: true,

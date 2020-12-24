@@ -1,5 +1,5 @@
 import express from 'express';
-import { bearerToken, verifyRequest } from '../middlewares';
+import { bearerToken, roleHandler, verifyRequest } from '../middlewares';
 
 import {
   createDepartment,
@@ -15,13 +15,13 @@ router.use('/departments', bearerToken);
 
 router
   .route('/departments')
-  .get(getDepartmentList)
-  .post(verifyRequest, createDepartment);
+  .get(roleHandler, getDepartmentList)
+  .post(roleHandler, verifyRequest, createDepartment);
 
 router
   .route('/departments/:id')
-  .get(getDepartmentDetail)
-  .put(verifyRequest, updateDepartment)
-  .delete(deleteDepartment);
+  .get(roleHandler, getDepartmentDetail)
+  .put(roleHandler, verifyRequest, updateDepartment)
+  .delete(roleHandler, deleteDepartment);
 
 export default router;

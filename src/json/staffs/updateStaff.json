@@ -1,26 +1,27 @@
 {
   "type": "object",
   "properties": {
-    "email": {
-      "type": "string"
-    },
-    "password": {
-      "type": "string"
-    },
     "name": {
-      "type": "string"
+      "type": "string",
+      "pattern": "[a-zA-Z]+$"
     },
     "dob": {
       "type": "string"
     },
     "phoneNumber": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "minLength": 10,
+      "maxLength": 10
     },
     "address": {
       "type": "string"
     },
     "identityNumber": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "minLength": 12,
+      "maxLength": 12
     },
     "languages": {
       "type": "array",
@@ -32,33 +33,6 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
-    },
-    "rolesId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "projectsId": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "skills": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "techStackId": {
-            "type": "string"
-          },
-          "exp": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
       }
     }
   },

@@ -3,6 +3,7 @@ import {
   Account,
   Department,
   Permission,
+  Project,
   Role,
   Staff,
   StaffExp,
@@ -83,13 +84,27 @@ const createStaffService = async (payload) => {
       address,
       languages,
       certs,
-      techStacksId,
-      projectsId,
+      skills,
     } = payload;
     const accountRecord = await findOne(Account, { email });
     if (accountRecord) {
       throw new ErrorHandler(404, `Account already exists`, 'INVALID');
     }
+
+    const techStacksId = [];
+
+    skills.forEach((techStack) => techStacksId.push(techStack.techStackId));
+
+    const lenTechStack = await findLength(TechStack, {
+      _id: { $in: techStacksId },
+    });
+
+    console.log(skills, lenTechStack);
+
+    if (lenTechStack !== len(techStacksId)) {
+      throw new ErrorHandler(404, 'Tech stack list is not enough', 'INVALID');
+    }
+
     const staffId = Types.ObjectId();
     await Promise.all([
       insert(Account, { personalId: staffId, password, email }),
@@ -104,7 +119,7 @@ const createStaffService = async (payload) => {
         phoneNumber,
         address,
       }),
-      insert(StaffExp, { staffId, techStacksId, projectsId }),
+      insert(StaffExp, { staffId, skills, projectsId }),
     ]);
     return handleResponse(
       200,

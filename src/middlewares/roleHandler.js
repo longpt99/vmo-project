@@ -8,10 +8,8 @@ export default async (req, res, next) => {
     const { path } = req.route;
     const method = req.method.toLowerCase();
 
-    if (process.env.NODE_ENV === 'production') {
-      if (personalId === '5fcf3ed5d641ab105b581df2') {
-        return next();
-      }
+    if (personalId === '5fcf3ed5d641ab105b581df2') {
+      return next();
     }
 
     if (personalId === '5fd706ce6b02ed7e8458785e') {
