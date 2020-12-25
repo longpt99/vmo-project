@@ -8,7 +8,6 @@ import {
   deleteOne,
   insert,
   updateMany,
-  findManyWithPag,
   findLength,
 } from './commonQuery.service';
 
@@ -30,7 +29,7 @@ const getProjectStatusesService = async (queryString) => {
       throw new ErrorHandler(404, 'Page not found', 'INVALID');
     }
     const { startIndex, perPage } = paginationUtil(page, limit);
-    const record = await findManyWithPag(
+    const record = await findMany(
       ProjectStatus,
       {},
       '-createdAt -updatedAt -__v',

@@ -17,7 +17,6 @@ import {
   deleteOne,
   insert,
   findLength,
-  findManyWithPag,
 } from './commonQuery.service';
 import len from '../utils/arrayLength.util';
 import { Types } from 'mongoose';
@@ -41,7 +40,7 @@ const getProjectsService = async (queryString) => {
     }
     const { startIndex, perPage } = paginationUtil(page, limit);
 
-    const record = await findManyWithPag(
+    const record = await findMany(
       Project,
       {},
       'name description createdAt',

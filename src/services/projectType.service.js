@@ -9,7 +9,6 @@ import {
   insert,
   updateMany,
   findLength,
-  findManyWithPag,
 } from './commonQuery.service';
 
 export {
@@ -29,7 +28,7 @@ const getProjectTypesService = async (queryString) => {
       throw new ErrorHandler(404, 'Page not found', 'INVALID');
     }
     const { startIndex, perPage } = paginationUtil(page, limit);
-    const record = await findManyWithPag(
+    const record = await findMany(
       ProjectType,
       {},
       '-createdAt -updatedAt -__v',

@@ -9,7 +9,6 @@ import {
   updateOne,
   updateMany,
   findLength,
-  findManyWithPag,
 } from './commonQuery.service';
 
 export {
@@ -29,7 +28,7 @@ const getCustomersService = async (queryString) => {
       throw new ErrorHandler(404, 'Page not found', 'INVALID');
     }
     const { startIndex, perPage } = paginationUtil(page, limit);
-    const record = await findManyWithPag(
+    const record = await findMany(
       Customer,
       {},
       '-createdAt -updatedAt -__v',
@@ -61,8 +60,8 @@ const getCustomerService = async (id) => {
 const createCustomerService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(Customer, { name }, 'id');
-    if (record) {
+    const lenRecord = await findLength(Customer, { name });
+    if (lenRecord) {
       throw new ErrorHandler(404, `Customer already exists`, 'INVALID');
     }
     await insert(Customer, payload);
@@ -78,8 +77,8 @@ const createCustomerService = async (payload) => {
 
 const updateCustomerService = async (id, payload) => {
   try {
-    const record = await findOne(Customer, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(Customer, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
     }
     const { name } = payload;
@@ -96,8 +95,8 @@ const updateCustomerService = async (id, payload) => {
 
 const deleteCustomerService = async (id) => {
   try {
-    const record = await findOne(Customer, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(Customer, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
     }
     await Promise.all([

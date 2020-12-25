@@ -7,7 +7,6 @@ export {
   updateMany,
   deleteMany,
   findLength,
-  findManyWithPag,
 };
 
 const findOne = async (model, filter, projection = '', populate) => {
@@ -18,13 +17,13 @@ const findOne = async (model, filter, projection = '', populate) => {
   }
 };
 
-const findMany = async (model, filter, projection = '') => {
-  try {
-    return await model.find(filter, projection);
-  } catch (error) {
-    throw error;
-  }
-};
+// const findMany = async (model, filter, projection = '') => {
+//   try {
+//     return await model.find(filter, projection);
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 const findLength = async (model, filter) => {
   try {
@@ -34,7 +33,7 @@ const findLength = async (model, filter) => {
   }
 };
 
-const findManyWithPag = async (
+const findMany = async (
   model,
   filter,
   projection = '',

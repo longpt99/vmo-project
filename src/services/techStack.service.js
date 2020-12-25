@@ -8,7 +8,6 @@ import {
   deleteOne,
   insert,
   updateMany,
-  findManyWithPag,
   findLength,
 } from './commonQuery.service';
 
@@ -32,7 +31,7 @@ const getTechStacksService = async (queryString) => {
     }
 
     const { startIndex, perPage } = paginationUtil(page, limit);
-    const record = await findManyWithPag(
+    const record = await findMany(
       TechStack,
       {},
       '-createdAt -updatedAt -__v',

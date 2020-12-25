@@ -8,7 +8,6 @@ import {
   insert,
   updateMany,
   findLength,
-  findManyWithPag,
 } from './commonQuery.service';
 
 import len from '../utils/arrayLength.util';
@@ -32,7 +31,7 @@ const getDepartmentsService = async (queryString) => {
       throw new ErrorHandler(404, 'Page not found', 'INVALID');
     }
     const { startIndex, perPage } = paginationUtil(page, limit);
-    const record = await findManyWithPag(
+    const record = await findMany(
       Department,
       {},
       'name description createdAt',
