@@ -58,7 +58,7 @@ const getDepartmentService = async (id) => {
     const record = await findOne(
       Department,
       { _id: id },
-      '-__v -updatedAt -_id',
+      '-__v -updatedAt',
       populate
     );
     if (!record) {

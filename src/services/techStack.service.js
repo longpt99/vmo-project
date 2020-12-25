@@ -50,7 +50,7 @@ const getTechStacksService = async (queryString) => {
 
 const getTechStackService = async (id) => {
   try {
-    const record = await findOne(TechStack, { _id: id });
+    const record = await findOne(TechStack, { _id: id }, '-updatedAt');
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
