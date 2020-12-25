@@ -3,7 +3,7 @@ import { Account, Staff } from '../models';
 import { findOne } from './commonQuery.service';
 import { signToken } from '../helpers/token.helper';
 
-export { loginService, refreshTokenService, getProfileService };
+export { loginService, refreshTokenService };
 
 const loginService = async (data) => {
   try {
@@ -20,7 +20,12 @@ const loginService = async (data) => {
     const staffRecord = await findOne(
       Staff,
       { _id: personal.personalId },
-      '-_id role'
+      'name role -_id',
+      {
+        path: 'role',
+        model: 'Role',
+        select: { roleName: 1, _id: 0 },
+      }
     );
 
     const payload = {
@@ -40,9 +45,8 @@ const loginService = async (data) => {
       process.env.REFRESH_TOKEN_EXPIRED_TIME
     );
     return handleResponse(200, 'Login successfully', 'LOGIN_SUCCESSFULLY', {
-      tokenType: 'Bearer',
-      accessToken,
-      refreshToken,
+      token: { tokenType: 'Bearer', accessToken, refreshToken },
+      payload: staffRecord,
     });
   } catch (error) {
     throw error;
@@ -61,24 +65,6 @@ const refreshTokenService = (refreshToken, payload) => {
       accessToken,
       refreshToken,
     });
-  } catch (error) {
-    throw error;
-  }
-};
-
-const getProfileService = async (id) => {
-  try {
-    const record = await findOne(Staff, { _id: id }, '-__v -updatedAt -_id', {
-      path: 'role',
-      model: 'Role',
-      select: { roleName: 1 },
-    });
-
-    if (!record) {
-      throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
-    }
-
-    return handleResponse(200, 'Get data successfully', 'SUCCEED', record);
   } catch (error) {
     throw error;
   }

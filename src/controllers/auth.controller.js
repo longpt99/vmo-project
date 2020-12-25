@@ -1,8 +1,5 @@
-import {
-  loginService,
-  refreshTokenService,
-  getProfileService,
-} from '../services/auth.service';
+import { loginService, refreshTokenService } from '../services/auth.service';
+import { getStaffService } from '../services/staff.service';
 export { login, refreshToken, getProfile };
 
 const login = async (req, res, next) => {
@@ -27,7 +24,7 @@ const refreshToken = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    const response = await getProfileService(res.locals.personalId);
+    const response = await getStaffService(res.locals.personalId);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);
