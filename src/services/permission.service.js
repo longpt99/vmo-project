@@ -20,12 +20,7 @@ export {
 const getPermissionsService = async () => {
   try {
     const record = await findMany(Permission, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', record);
   } catch (error) {
     throw error;
   }
@@ -37,12 +32,7 @@ const getPermissionService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { record }
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', { record });
   } catch (error) {
     throw error;
   }
@@ -52,12 +42,10 @@ const createPermissionService = async (payload) => {
   try {
     const { name } = payload;
     const record = await findOne(Permission, { name }, 'id');
-
     if (record) {
       throw new ErrorHandler(404, 'Permission already exists', 'INVALID');
     }
-
-    await insert(Permission, payload);
+    await insert(Permission, perms);
     return handleResponse(
       200,
       'Create data successfully',
@@ -75,11 +63,7 @@ const updatePermissionService = async (id, payload) => {
       throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
     await updateOne(Permission, { _id: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -97,12 +81,9 @@ const deletePermissionService = async (id, staffId) => {
       deleteOne(Permission, { _id: id }),
       updateMany(Role, { staffId }, { $pull: { permsId: { $in: routesId } } }),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY',
-      { routesId }
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED', {
+      routesId,
+    });
   } catch (error) {
     throw error;
   }

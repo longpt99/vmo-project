@@ -16,7 +16,8 @@ export default async (req, res, next) => {
       throw new ErrorHandler(401, 'Expected a Bearer token', 'UNAUTHORIZATION');
     }
     const user = verifyToken(token, process.env.ACCESS_TOKEN_SECRET_KEY);
-    res.locals.id = user.personalId;
+    res.locals.personalId = user.personalId;
+    res.locals.roleStaffId = user.roleStaffId;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {

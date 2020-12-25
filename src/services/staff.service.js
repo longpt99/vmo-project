@@ -17,9 +17,12 @@ import {
   insert,
   updateMany,
   findLength,
+  findManyWithPag,
 } from './commonQuery.service';
 import { Types } from 'mongoose';
 import len from '../utils/arrayLength.util';
+import paginationUtil from '../utils/pagination.util';
+import sizeof from 'object-sizeof';
 
 export {
   getStaffsService,
@@ -31,15 +34,28 @@ export {
   updateStaffRoleService,
 };
 
-const getStaffsService = async () => {
+const getStaffsService = async (queryString) => {
   try {
-    const record = await findMany(Staff, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+    const totalDoc = await findLength(Staff, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+    const { startIndex, perPage } = paginationUtil(page, limit);
+    const record = await findManyWithPag(
+      Staff,
+      {},
+      'name email createdAt role',
+      startIndex,
+      perPage,
+      { path: 'role', model: 'Role', select: 'roleName -_id' }
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -47,7 +63,11 @@ const getStaffsService = async () => {
 
 const getStaffService = async (id) => {
   try {
-    const staffInfoRecord = await findOne(Staff, { _id: id });
+    const staffInfoRecord = await findOne(
+      Staff,
+      { _id: id },
+      '-__v -updatedAt'
+    );
     if (!staffInfoRecord) {
       throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
     }
@@ -58,15 +78,13 @@ const getStaffService = async (id) => {
     const staffExpRecord = await findOne(
       StaffExp,
       { staffId: id },
-      '',
+      '-__v -updatedAt -createdAt',
       populate
     );
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { staffInfoRecord, staffExpRecord }
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      staffInfoRecord,
+      staffExpRecord,
+    });
   } catch (error) {
     throw error;
   }
@@ -85,24 +103,28 @@ const createStaffService = async (payload) => {
       languages,
       certs,
       skills,
+      role,
     } = payload;
-    const accountRecord = await findOne(Account, { email });
-    if (accountRecord) {
+
+    const lenAccountRecord = await findLength(Account, { email });
+    if (lenAccountRecord === 1) {
       throw new ErrorHandler(404, `Account already exists`, 'INVALID');
     }
-
     const techStacksId = [];
-
     skills.forEach((techStack) => techStacksId.push(techStack.techStackId));
 
     const lenTechStack = await findLength(TechStack, {
       _id: { $in: techStacksId },
     });
 
-    console.log(skills, lenTechStack);
-
     if (lenTechStack !== len(techStacksId)) {
       throw new ErrorHandler(404, 'Tech stack list is not enough', 'INVALID');
+    }
+
+    const lenRole = await findLength(Role, { _id: role });
+
+    if (lenRole < 1) {
+      throw new ErrorHandler(404, 'Role is not found', 'INVALID');
     }
 
     const staffId = Types.ObjectId();
@@ -118,6 +140,7 @@ const createStaffService = async (payload) => {
         identityNumber,
         phoneNumber,
         address,
+        role,
       }),
       insert(StaffExp, { staffId, skills }),
     ]);
@@ -133,16 +156,12 @@ const createStaffService = async (payload) => {
 
 const updateStaffService = async (id, payload) => {
   try {
-    const record = await findOne(Staff, { _id: id });
-    if (!record) {
+    const lenRecord = await findLength(Staff, { _id: id });
+    if (lenRecord !== 1) {
       throw new ErrorHandler('Staff no exists', 'INVALID');
     }
     await updateOne(Staff, { _id: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -150,9 +169,9 @@ const updateStaffService = async (id, payload) => {
 
 const deleteStaffService = async (id) => {
   try {
-    const record = await findOne(Staff, { _id: id });
-    if (!record) {
-      throw new ErrorHandler('Staff no exists', 'INVALID');
+    const lenRecord = await findLength(Staff, { _id: id });
+    if (lenRecord !== 1) {
+      throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
     }
     await Promise.all([
       deleteOne(Staff, { _id: id }),
@@ -161,11 +180,7 @@ const deleteStaffService = async (id) => {
       updateMany(Department, { staffsId: id }, { $pull: { staffsId: id } }),
       updateMany(Project, { staffsId: id }, { $pull: { staffsId: id } }),
     ]);
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -173,8 +188,8 @@ const deleteStaffService = async (id) => {
 
 const updateStaffExpService = async (id, payload) => {
   try {
-    const record = await findOne(StaffExp, { staffId: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(StaffExp, { staffId: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Staff no exists', 'INVALID');
     }
     const techStacksId = [];
@@ -190,11 +205,7 @@ const updateStaffExpService = async (id, payload) => {
       throw new ErrorHandler(400, 'Invalid', 'INVALID');
     }
     await updateOne(StaffExp, { staffId: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -244,11 +255,7 @@ const updateStaffRoleService = async (id, payload) => {
       throw new ErrorHandler(404, 'Staff not exists', 'INVALID');
     }
     await updateOne(Role, { staffId: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

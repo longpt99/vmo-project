@@ -25,13 +25,12 @@ router.route('/staffs/search').get(roleHandler, getStaffSearch);
 
 router.route('/staffs/report').get(roleHandler, getStaffReport);
 
+router.route('/staffs/:id/exp').put(roleHandler, verifyRequest, updateStaffExp);
 router
   .route('/staffs/:id')
   .get(roleHandler, getStaffDetail)
   .put(roleHandler, verifyRequest, updateStaff)
   .delete(roleHandler, deleteStaff);
-
-router.route('/staffs/:id/exp').put(roleHandler, verifyRequest, updateStaffExp);
 
 router
   .route('/staffs/:id/roles')

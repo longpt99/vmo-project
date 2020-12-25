@@ -10,12 +10,11 @@ const StaffSchema = new Schema(
     identityNumber: String,
     languages: [String],
     certs: [String],
-    permsId: [Schema.Types.ObjectId],
+    role: { type: Schema.Types.ObjectId, ref: 'Role' },
   },
   {
     timestamps: true,
   }
 );
-// StaffSchema.plugin(uniqueValidator);
 
 export default model('Staff', StaffSchema);

@@ -8,9 +8,11 @@ import {
   insert,
   updateMany,
   findLength,
+  findManyWithPag,
 } from './commonQuery.service';
 
 import len from '../utils/arrayLength.util';
+import paginationUtil from '../utils/pagination.util';
 
 export {
   getDepartmentService,
@@ -20,15 +22,28 @@ export {
   deleteDepartmentService,
 };
 
-const getDepartmentsService = async () => {
+const getDepartmentsService = async (queryString) => {
   try {
-    const record = await findMany(Department, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+
+    const totalDoc = await findLength(Department, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+    const { startIndex, perPage } = paginationUtil(page, limit);
+    const record = await findManyWithPag(
+      Department,
+      {},
+      'name description createdAt',
+      startIndex,
+      perPage
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -45,12 +60,7 @@ const getDepartmentService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Department not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { record }
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', { record });
   } catch (error) {
     throw error;
   }
@@ -98,11 +108,7 @@ const updateDepartmentService = async (id, payload) => {
       );
     }
 
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -122,11 +128,7 @@ const deleteDepartmentService = async (id) => {
         { $pull: { departmentsId: id } }
       ),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -151,6 +153,7 @@ const compareDepartmentData = async (payload, id) => {
       'id'
     );
     const staffsAsync = findLength(Staff, { _id: { $in: staffsId } }, 'id');
+
     const lenTechStacksRecord = await techStacksAsync;
     if (lenTechStacksRecord < len(techStacksId)) {
       throw new ErrorHandler(400, 'Tech stack error', 'INVALID');

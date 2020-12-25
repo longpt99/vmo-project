@@ -4,7 +4,7 @@ import { findOne } from '../services/commonQuery.service';
 
 export default async (req, res, next) => {
   try {
-    const personalId = res.locals.id;
+    const { personalId, roleStaffId } = res.locals;
     const { path } = req.route;
     const method = req.method.toLowerCase();
 
@@ -19,20 +19,22 @@ export default async (req, res, next) => {
     const permRecord = await findOne(
       Permission,
       {
-        'routes.path': path,
-        'routes.method': method,
-        'routes.active': true,
+        path,
+        method,
+        active,
       },
-      { 'routes.$': 1 }
+      'id'
     );
 
     if (!permRecord) {
       throw new ErrorHandler(400, 'Permission not exists', 'INVALID');
     }
-    const roleRecord = await findOne(Role, {
-      permsId: permRecord.routes[0]._id,
-      staffId: personalId,
-    });
+    const roleRecord = await findOne(
+      Role,
+      { permsId: permRecord._id, id: roleStaffId },
+      'id'
+    );
+
     if (!roleRecord) {
       throw new ErrorHandler(403, 'Forbidden', 'INVALID');
     }

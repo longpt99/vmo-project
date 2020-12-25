@@ -16,7 +16,7 @@ export {
 
 const getDepartmentList = async (req, res, next) => {
   try {
-    const response = await getDepartmentsService();
+    const response = await getDepartmentsService(req.query);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

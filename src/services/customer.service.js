@@ -1,5 +1,6 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import { Customer, Project } from '../models';
+import paginationUtil from '../utils/pagination.util';
 import {
   deleteOne,
   findMany,
@@ -7,6 +8,8 @@ import {
   insert,
   updateOne,
   updateMany,
+  findLength,
+  findManyWithPag,
 } from './commonQuery.service';
 
 export {
@@ -17,15 +20,27 @@ export {
   deleteCustomerService,
 };
 
-const getCustomersService = async () => {
+const getCustomersService = async (queryString) => {
   try {
-    const record = await findMany(Customer, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+    const totalDoc = await findLength(Customer, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+    const { startIndex, perPage } = paginationUtil(page, limit);
+    const record = await findManyWithPag(
+      Customer,
+      {},
+      '-createdAt -updatedAt -__v',
+      startIndex,
+      perPage
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -37,12 +52,7 @@ const getCustomerService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', record);
   } catch (error) {
     throw error;
   }
@@ -78,11 +88,7 @@ const updateCustomerService = async (id, payload) => {
       throw new ErrorHandler(404, `Customer ${name} already exists`, 'INVALID');
     }
     await updateOne(Customer, { _id: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -98,11 +104,7 @@ const deleteCustomerService = async (id) => {
       deleteOne(Customer, { _id: id }),
       updateMany(Project, { customersId: id }, { $pull: { customersId: id } }),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

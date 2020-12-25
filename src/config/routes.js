@@ -8,6 +8,7 @@ import projectRouter from '../routes/project.route';
 import customerRouter from '../routes/customer.route';
 import searchRouter from '../routes/search.route';
 import permissionRouter from '../routes/permission.route';
+import roleRouter from '../routes/role.route';
 
 export default (app) => {
   app.use('/api', [
@@ -20,6 +21,7 @@ export default (app) => {
     projectTypeRouter,
     projectStatusRouter,
     permissionRouter,
+    roleRouter,
     searchRouter,
   ]);
 

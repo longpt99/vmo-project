@@ -17,9 +17,11 @@ import {
   deleteOne,
   insert,
   findLength,
+  findManyWithPag,
 } from './commonQuery.service';
 import len from '../utils/arrayLength.util';
 import { Types } from 'mongoose';
+import paginationUtil from '../utils/pagination.util';
 
 export {
   getProjectsService,
@@ -29,15 +31,28 @@ export {
   deleteProjectService,
 };
 
-const getProjectsService = async () => {
+const getProjectsService = async (queryString) => {
   try {
-    const record = await findMany(Project, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+    const totalDoc = await findLength(Project, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+    const { startIndex, perPage } = paginationUtil(page, limit);
+
+    const record = await findManyWithPag(
+      Project,
+      {},
+      'name description createdAt',
+      startIndex,
+      perPage
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -57,12 +72,7 @@ const getProjectService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Project not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', record);
   } catch (error) {
     throw error;
   }
@@ -135,11 +145,7 @@ const updateProjectService = async (id, payload) => {
         ),
       ]);
     }
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -159,11 +165,7 @@ const deleteProjectService = async (id) => {
       updateMany(StaffExp, { projectsId: id }, { $pull: { projectsId: id } }),
       updateMany(Department, { projectsId: id }, { $pull: { projectsId: id } }),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

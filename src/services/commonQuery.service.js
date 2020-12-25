@@ -7,6 +7,7 @@ export {
   updateMany,
   deleteMany,
   findLength,
+  findManyWithPag,
 };
 
 const findOne = async (model, filter, projection = '', populate) => {
@@ -25,9 +26,28 @@ const findMany = async (model, filter, projection = '') => {
   }
 };
 
-const findLength = async (model, filter, projection = '') => {
+const findLength = async (model, filter) => {
   try {
-    return await model.find(filter, projection).countDocuments();
+    return await model.find(filter).countDocuments();
+  } catch (error) {
+    throw error;
+  }
+};
+
+const findManyWithPag = async (
+  model,
+  filter,
+  projection = '',
+  start,
+  perPage,
+  populate
+) => {
+  try {
+    return await model
+      .find(filter, projection)
+      .skip(start)
+      .limit(perPage)
+      .populate(populate);
   } catch (error) {
     throw error;
   }

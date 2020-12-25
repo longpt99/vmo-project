@@ -22,7 +22,7 @@ export {
 
 const getStaffList = async (req, res, next) => {
   try {
-    const response = await getStaffsService();
+    const response = await getStaffsService(req.query);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

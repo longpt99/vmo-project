@@ -1,0 +1,26 @@
+{
+  "title": "Permission",
+  "description": "Create a new permission",
+  "type": "object",
+  "required": ["name", "active", "path", "method", "groupName"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "groupName": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "enum": [true, false]
+    },
+    "method": {
+      "type": "string",
+      "enum": ["get", "post", "put", "delete"]
+    }
+  },
+  "additionalProperties": false
+}

@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const RoleSchema = new Schema(
   {
-    staffId: Schema.Types.ObjectId,
+    roleName: String,
     permsId: [Schema.Types.ObjectId],
   },
   {

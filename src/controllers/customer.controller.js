@@ -16,7 +16,7 @@ export {
 
 const getCustomerList = async (req, res, next) => {
   try {
-    const response = await getCustomersService();
+    const response = await getCustomersService(req.query);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

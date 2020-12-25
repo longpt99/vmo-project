@@ -1,5 +1,6 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import { Project, ProjectStatus } from '../models';
+import paginationUtil from '../utils/pagination.util';
 import {
   findOne,
   findMany,
@@ -7,6 +8,8 @@ import {
   deleteOne,
   insert,
   updateMany,
+  findManyWithPag,
+  findLength,
 } from './commonQuery.service';
 
 export {
@@ -17,15 +20,28 @@ export {
   deleteProjectStatusService,
 };
 
-const getProjectStatusesService = async () => {
+const getProjectStatusesService = async (queryString) => {
   try {
-    const record = await findMany(ProjectStatus, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+
+    const totalDoc = await findLength(ProjectStatus, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+    const { startIndex, perPage } = paginationUtil(page, limit);
+    const record = await findManyWithPag(
+      ProjectStatus,
+      {},
+      '-createdAt -updatedAt -__v',
+      startIndex,
+      perPage
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -37,12 +53,7 @@ const getProjectStatusService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { record }
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', { record });
   } catch (error) {
     throw error;
   }
@@ -78,11 +89,7 @@ const updateProjectStatusService = async (id, payload) => {
       throw new ErrorHandler(404, `Project status already exists`, 'INVALID');
     }
     await updateOne(ProjectStatus, { _id: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -102,11 +109,7 @@ const deleteProjectStatusService = async (id) => {
         { $set: { projectStatusId: null } }
       ),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

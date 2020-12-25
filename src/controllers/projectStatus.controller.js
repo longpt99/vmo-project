@@ -16,7 +16,7 @@ export {
 
 const getProjectStatuses = async (req, res, next) => {
   try {
-    const response = await getProjectStatusesService();
+    const response = await getProjectStatusesService(req.query);
     return res.status(response.status).json(response);
   } catch (error) {
     return next(error);

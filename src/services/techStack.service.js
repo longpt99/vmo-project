@@ -1,5 +1,6 @@
 import { ErrorHandler, handleResponse } from '../helpers/response.helper';
 import { Department, Project, StaffExp, TechStack } from '../models';
+import paginationUtil from '../utils/pagination.util';
 import {
   findOne,
   findMany,
@@ -7,6 +8,8 @@ import {
   deleteOne,
   insert,
   updateMany,
+  findManyWithPag,
+  findLength,
 } from './commonQuery.service';
 
 export {
@@ -17,15 +20,30 @@ export {
   deleteTechStackService,
 };
 
-const getTechStacksService = async () => {
+const getTechStacksService = async (queryString) => {
   try {
-    const record = await findMany(TechStack, {});
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      record
+    const { page, limit } = queryString;
+
+    const totalDoc = await findLength(TechStack, {});
+    const totalPage = Math.ceil(totalDoc / limit);
+
+    if (page > totalPage) {
+      throw new ErrorHandler(404, 'Page not found', 'INVALID');
+    }
+
+    const { startIndex, perPage } = paginationUtil(page, limit);
+    const record = await findManyWithPag(
+      TechStack,
+      {},
+      '-createdAt -updatedAt -__v',
+      startIndex,
+      perPage
     );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', {
+      record,
+      totalDoc,
+      startIndex,
+    });
   } catch (error) {
     throw error;
   }
@@ -37,12 +55,7 @@ const getTechStackService = async (id) => {
     if (!record) {
       throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
     }
-    return handleResponse(
-      200,
-      'Get data successfully',
-      'GET_DATA_SUCCESSFULLY',
-      { record }
-    );
+    return handleResponse(200, 'Get data successfully', 'SUCCEED', { record });
   } catch (error) {
     throw error;
   }
@@ -78,11 +91,7 @@ const updateTechStackService = async (id, payload) => {
       throw new ErrorHandler(404, `Tech stack already exists`, 'INVALID');
     }
     await updateOne(TechStack, { _id: id }, { $set: payload });
-    return handleResponse(
-      200,
-      'Update data successfully',
-      'UPDATE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Update data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }
@@ -112,11 +121,7 @@ const deleteTechStackService = async (id) => {
         { $pull: { skills: { techStackId: id } } }
       ),
     ]);
-    return handleResponse(
-      200,
-      'Delete data successfully',
-      'DELETE_DATA_SUCCESSFULLY'
-    );
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

@@ -54,7 +54,7 @@ const deletePermission = async (req, res, next) => {
   try {
     const response = await deletePermissionService(
       req.params.id,
-      res.locals.id
+      res.locals.personalId
     );
     return res.status(response.status).json(response);
   } catch (error) {
