@@ -55,7 +55,12 @@ const getDepartmentService = async (id) => {
       { path: 'projectsId', select: 'name' },
       { path: 'staffsId', select: 'name' },
     ];
-    const record = await findOne(Department, { _id: id }, '', populate);
+    const record = await findOne(
+      Department,
+      { _id: id },
+      '-__v -updatedAt -_id',
+      populate
+    );
     if (!record) {
       throw new ErrorHandler(404, 'Department not exists', 'INVALID');
     }

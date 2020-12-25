@@ -152,12 +152,9 @@ const updateProjectService = async (id, payload) => {
 
 const deleteProjectService = async (id) => {
   try {
-    if (!id) {
-      throw new ErrorHandler(400, 'Invalid', 'INVALID');
-    }
-    const record = await findOne(Project, { _id: id }, 'id');
-    if (!record) {
-      throw new ErrorHandler(404, 'Project not exist');
+    const lenRecord = await findLength(Project, { _id: id });
+    if (!lenRecord) {
+      throw new ErrorHandler(404, 'Project not exist', 'INVALID');
     }
     await Promise.all([
       deleteOne(Project, { _id: id }),

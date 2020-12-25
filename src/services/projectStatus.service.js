@@ -48,7 +48,7 @@ const getProjectStatusesService = async (queryString) => {
 
 const getProjectStatusService = async (id) => {
   try {
-    const record = await findOne(ProjectStatus, { _id: id });
+    const record = await findOne(ProjectStatus, { _id: id }, '-__v -updatedAt');
     if (!record) {
       throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
     }
@@ -61,8 +61,8 @@ const getProjectStatusService = async (id) => {
 const createProjectStatusService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(ProjectStatus, { name }, 'id');
-    if (record) {
+    const lenRecord = await findLength(ProjectStatus, { name });
+    if (lenRecord) {
       throw new ErrorHandler(404, `Project status already exists`, 'INVALID');
     }
     await insert(ProjectStatus, payload);
@@ -78,8 +78,8 @@ const createProjectStatusService = async (payload) => {
 
 const updateProjectStatusService = async (id, payload) => {
   try {
-    const record = await findOne(ProjectStatus, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(ProjectStatus, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
     }
     const { name } = payload;
@@ -96,8 +96,8 @@ const updateProjectStatusService = async (id, payload) => {
 
 const deleteProjectStatusService = async (id) => {
   try {
-    const record = await findOne(ProjectStatus, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(ProjectStatus, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Project status not exists', 'INVALID');
     }
     await Promise.all([

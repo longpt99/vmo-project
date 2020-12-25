@@ -19,7 +19,7 @@ export {
 
 const getPermissionsService = async () => {
   try {
-    const record = await findMany(Permission, {});
+    const record = await findMany(Permission, {}, '-__v -updatedAt -createdAt');
     return handleResponse(200, 'Get data successfully', 'SUCCEED', record);
   } catch (error) {
     throw error;
@@ -28,7 +28,11 @@ const getPermissionsService = async () => {
 
 const getPermissionService = async (id) => {
   try {
-    const record = await findOne(Permission, { _id: id });
+    const record = await findOne(
+      Permission,
+      { _id: id },
+      '-__v -updatedAt -createdAt'
+    );
     if (!record) {
       throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
@@ -41,8 +45,8 @@ const getPermissionService = async (id) => {
 const createPermissionService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(Permission, { name }, 'id');
-    if (record) {
+    const lenRecord = await findMany(Permission, { name });
+    if (lenRecord) {
       throw new ErrorHandler(404, 'Permission already exists', 'INVALID');
     }
     await insert(Permission, perms);
@@ -58,8 +62,8 @@ const createPermissionService = async (payload) => {
 
 const updatePermissionService = async (id, payload) => {
   try {
-    const record = await findOne(Permission, { _id: id });
-    if (!record) {
+    const lenRecord = await findMany(Permission, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
     await updateOne(Permission, { _id: id }, { $set: payload });
@@ -69,21 +73,17 @@ const updatePermissionService = async (id, payload) => {
   }
 };
 
-const deletePermissionService = async (id, staffId) => {
+const deletePermissionService = async (id) => {
   try {
-    const record = await findOne(Permission, { _id: id }, 'routes._id');
-    const routesId = [];
-    record.routes.forEach((item) => routesId.push(item._id));
-    if (!record) {
-      throw new ErrorHandler(404, 'Tech stack not exists', 'INVALID');
+    const lenRecord = await findMany(Permission, { _id: id });
+    if (!lenRecord) {
+      throw new ErrorHandler(404, 'Permission not exists', 'INVALID');
     }
     await Promise.all([
       deleteOne(Permission, { _id: id }),
-      updateMany(Role, { staffId }, { $pull: { permsId: { $in: routesId } } }),
+      updateMany(Role, { permsId: id }, { $pull: { permsId: id } }),
     ]);
-    return handleResponse(200, 'Delete data successfully', 'SUCCEED', {
-      routesId,
-    });
+    return handleResponse(200, 'Delete data successfully', 'SUCCEED');
   } catch (error) {
     throw error;
   }

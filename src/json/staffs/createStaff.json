@@ -56,6 +56,9 @@
         "type": "string"
       }
     },
+    "role": {
+      "type": "string"
+    },
     "skills": {
       "type": "array",
       "items": {

@@ -47,7 +47,7 @@ const getProjectTypesService = async (queryString) => {
 
 const getProjectTypeService = async (id) => {
   try {
-    const record = await findOne(ProjectType, { _id: id });
+    const record = await findOne(ProjectType, { _id: id }, '-__v -updatedAt');
     if (!record) {
       throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
     }
@@ -60,8 +60,8 @@ const getProjectTypeService = async (id) => {
 const createProjectTypeService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(ProjectType, { name }, 'id');
-    if (record) {
+    const lenRecord = await findLength(ProjectType, { name });
+    if (lenRecord) {
       throw new ErrorHandler(404, `Project type already exists`, 'INVALID');
     }
     await insert(ProjectType, payload);
@@ -77,8 +77,8 @@ const createProjectTypeService = async (payload) => {
 
 const updateProjectTypeService = async (id, payload) => {
   try {
-    const record = await findOne(ProjectType, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(ProjectType, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
     }
     const { name } = payload;
@@ -95,8 +95,8 @@ const updateProjectTypeService = async (id, payload) => {
 
 const deleteProjectTypeService = async (id) => {
   try {
-    const record = await findOne(ProjectType, { _id: id }, 'id');
-    if (!record) {
+    const lenRecord = await findLength(ProjectType, { _id: id });
+    if (!lenRecord) {
       throw new ErrorHandler(404, 'Project type not exists', 'INVALID');
     }
     await Promise.all([

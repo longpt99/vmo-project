@@ -47,7 +47,7 @@ const getCustomersService = async (queryString) => {
 
 const getCustomerService = async (id) => {
   try {
-    const record = await findOne(Customer, { _id: id });
+    const record = await findOne(Customer, { _id: id }, '-__v -updatedAt');
     if (!record) {
       throw new ErrorHandler(404, 'Customer not exists', 'INVALID');
     }

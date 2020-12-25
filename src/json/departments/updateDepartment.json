@@ -36,7 +36,19 @@
     "remove": {
       "type": "object",
       "properties": {
+        "techStacksId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "projectsId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "staffsId": {
           "type": "array",
           "items": {
             "type": "string"
