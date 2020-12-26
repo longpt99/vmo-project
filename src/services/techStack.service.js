@@ -63,15 +63,16 @@ const getTechStackService = async (id) => {
 const createTechStackService = async (payload) => {
   try {
     const { name } = payload;
-    const record = await findOne(TechStack, { name }, 'id');
-    if (record) {
+    const lenRecord = await findLength(TechStack, { name });
+    if (lenRecord) {
       throw new ErrorHandler(404, `Tech stack already exists`, 'INVALID');
     }
-    await insert(TechStack, payload);
+    const record = await insert(TechStack, payload);
     return handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: record._id }
     );
   } catch (error) {
     throw error;

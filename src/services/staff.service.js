@@ -146,7 +146,8 @@ const createStaffService = async (payload) => {
     return handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: staffId }
     );
   } catch (error) {
     throw error;

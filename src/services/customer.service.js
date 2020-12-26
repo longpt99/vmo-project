@@ -64,11 +64,12 @@ const createCustomerService = async (payload) => {
     if (lenRecord) {
       throw new ErrorHandler(404, `Customer already exists`, 'INVALID');
     }
-    await insert(Customer, payload);
+    const record = await insert(Customer, payload);
     return handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: record._id }
     );
   } catch (error) {
     throw error;

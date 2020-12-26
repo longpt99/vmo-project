@@ -21,17 +21,18 @@ export default async (req, res, next) => {
       {
         path,
         method,
-        active,
+        active: true,
       },
-      'id'
+      '_id'
     );
 
     if (!permRecord) {
       throw new ErrorHandler(400, 'Permission not exists', 'INVALID');
     }
+
     const roleRecord = await findOne(
       Role,
-      { permsId: permRecord._id, id: roleStaffId },
+      { permsId: permRecord._id, _id: roleStaffId },
       'id'
     );
 

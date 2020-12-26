@@ -64,11 +64,12 @@ const createProjectTypeService = async (payload) => {
     if (lenRecord) {
       throw new ErrorHandler(404, `Project type already exists`, 'INVALID');
     }
-    await insert(ProjectType, payload);
+    const record = await insert(ProjectType, payload);
     return handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: record._id }
     );
   } catch (error) {
     throw error;

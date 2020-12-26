@@ -73,11 +73,12 @@ const getDepartmentService = async (id) => {
 const createDepartmentService = async (payload) => {
   try {
     await compareDepartmentData(payload);
-    await insert(Department, payload);
+    const record = await insert(Department, payload);
     const response = handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: record._id }
     );
     return response;
   } catch (error) {

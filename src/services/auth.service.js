@@ -24,12 +24,14 @@ const loginService = async (data) => {
       {
         path: 'role',
         model: 'Role',
-        select: { roleName: 1, _id: 0 },
+        select: { roleName: 1 },
       }
     );
 
+    console.log(staffRecord);
+
     const payload = {
-      roleStaffId: staffRecord.role,
+      roleStaffId: staffRecord.role._id,
       personalId: personal.personalId,
     };
 
@@ -46,7 +48,7 @@ const loginService = async (data) => {
     );
     return handleResponse(200, 'Login successfully', 'LOGIN_SUCCESSFULLY', {
       token: { tokenType: 'Bearer', accessToken, refreshToken },
-      payload: staffRecord,
+      payload: { name: staffRecord.name, role: staffRecord.role.roleName },
     });
   } catch (error) {
     throw error;
