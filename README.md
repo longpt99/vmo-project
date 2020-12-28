@@ -1,177 +1,179 @@
-account: admin01@gmail.com
-password: admin123
+# Management Project
 
-Route API:
+Made by [longpt99](https://github.com/longpt99)
 
-Mục lục:
+# New Features!
 
-1. Cài đặt môi trường
+- Authentication (jsonwebtoken)
+- Category (customer, project type, project status, tech stack)
+- Management (project, department, staff)
+- User role (pending)
 
-- Package: nodejs, yarn
-  Create file .env.dev trong src/config/env;
+# File Structure
 
-2. Start project: yarn server
+> ├── Procfile
+> ├── README.md
+> ├── package.json
+> ├── server.js
+> ├── src
+> │ ├── app.js
+> │ ├── config
+> │ │ ├── database.js
+> │ │ ├── dependencies.js
+> │ │ ├── env
+> │ │ ├── routeSchema.json
+> │ │ ├── routes.js
+> │ │ └── webpack
+> │ │ ├── webpack.common.js
+> │ │ ├── webpack.dev.js
+> │ │ └── webpack.prod.js
+> │ ├── controllers
+> │ │ ├── auth.controller.js
+> │ │ ├── customer.controller.js
+> │ │ ├── department.controller.js
+> │ │ ├── permission.controller.js
+> │ │ ├── project.controller.js
+> │ │ ├── projectStatus.controller.js
+> │ │ ├── projectType.controller.js
+> │ │ ├── role.controller.js
+> │ │ ├── search.controller.js
+> │ │ ├── staff.controller.js
+> │ │ └── techStack.controller.js
+> │ ├── helpers
+> │ │ ├── logger.helper.js
+> │ │ ├── response.helper.js
+> │ │ └── token.helper.js
+> │ ├── json
+> │ │ ├── auth
+> │ │ │ ├── login.json
+> │ │ │ ├── refreshToken.json
+> │ │ │ └── resetPassword.json
+> │ │ ├── customers
+> │ │ │ ├── createCustomer.json
+> │ │ │ └── updateCustomer.json
+> │ │ ├── departments
+> │ │ │ ├── createDepartment.json
+> │ │ │ └── updateDepartment.json
+> │ │ ├── permissions
+> │ │ │ ├── createPermission.json
+> │ │ │ └── updatePermission.json
+> │ │ ├── projectStatuses
+> │ │ │ ├── createProjectStatus.json
+> │ │ │ └── updateProjectStatus.json
+> │ │ ├── projectTypes
+> │ │ │ ├── createProjectType.json
+> │ │ │ └── updateProjectType.json
+> │ │ ├── projects
+> │ │ │ ├── createProject.json
+> │ │ │ └── updateProject.json
+> │ │ ├── staffs
+> │ │ │ ├── createStaff.json
+> │ │ │ ├── updateStaff.json
+> │ │ │ └── updateStaffExp.json
+> │ │ └── techStacks
+> │ │ ├── createTechStack.json
+> │ │ └── updateTechStack.json
+> │ ├── middlewares
+> │ │ ├── basicToken.js
+> │ │ ├── bearerToken.js
+> │ │ ├── errorHandler.js
+> │ │ ├── index.js
+> │ │ ├── initialAccount.js
+> │ │ ├── refreshTokenHandler.js
+> │ │ ├── roleHandler.js
+> │ │ └── verifyRequest.js
+> │ ├── models
+> │ │ ├── account.model.js
+> │ │ ├── client.model.js
+> │ │ ├── customer.model.js
+> │ │ ├── department.model.js
+> │ │ ├── index.js
+> │ │ ├── permission.model.js
+> │ │ ├── project.model.js
+> │ │ ├── projectStatus.model.js
+> │ │ ├── projectType.model.js
+> │ │ ├── role.model.js
+> │ │ ├── staff.model.js
+> │ │ ├── staffExp.model.js
+> │ │ └── techStack.model.js
+> │ ├── modules
+> │ │ ├── auths
+> │ │ │ ├── account.model.js
+> │ │ │ ├── auth.controller.js
+> │ │ │ ├── auth.route.js
+> │ │ │ └── auth.service.js
+> │ │ ├── customers
+> │ │ ├── permissions
+> │ │ ├── project-statuses
+> │ │ ├── project-types
+> │ │ ├── projects
+> │ │ ├── staffs
+> │ │ └── tech-stacks
+> │ ├── routes
+> │ │ ├── auth.route.js
+> │ │ ├── customer.route.js
+> │ │ ├── department.route.js
+> │ │ ├── permission.route.js
+> │ │ ├── project.route.js
+> │ │ ├── projectStatus.route.js
+> │ │ ├── projectType.route.js
+> │ │ ├── role.route.js
+> │ │ ├── search.route.js
+> │ │ ├── staff.route.js
+> │ │ └── techStack.route.js
+> │ ├── services
+> │ │ ├── auth.service.js
+> │ │ ├── client.service.js
+> │ │ ├── commonQuery.service.js
+> │ │ ├── customer.service.js
+> │ │ ├── department.service.js
+> │ │ ├── permission.service.js
+> │ │ ├── project.service.js
+> │ │ ├── projectStatus.service.js
+> │ │ ├── projectType.service.js
+> │ │ ├── role.service.js
+> │ │ ├── search.service.js
+> │ │ ├── staff.service.js
+> │ │ └── techStack.service.js
+> │ ├── tests
+> │ │ ├── auth.test.js
+> │ │ ├── customer.test.js
+> │ │ ├── department.test.js
+> │ │ ├── index.test.js
+> │ │ ├── project.test.js
+> │ │ ├── projectStatus.test.js
+> │ │ ├── projectType.test.js
+> │ │ ├── staff.test.js
+> │ │ └── techStack.test.js
+> │ └── utils
+> │ ├── arrayLength.util.js
+> │ ├── capitalizeFirstLetter.util.js
+> │ └── pagination.util.js
+> ├── swagger.json
+> ├── yarn-error.log
+> └── yarn.lock
 
-3. Docs API:
+# Requirements
 
-- Authentication:
+- Install [Node](https://nodejs.org/en/download) v14.15.1 LTS
+- Install [yarn](https://yarnpkg.com/getting-started) v1.22.5
+- Install [MongoDB](https://firebase.google.com/docs/cli/) v4.4.2
 
-* Login: POST method
-  Router: http://localhost:8080/api/auth/login
-  Body: {
-  email: "admin01@gmail.com",
-  password: "admin01"
-  }
+# Development
 
-* Refresh token: POST method
-  Router: http://localhost:8080/api/auth/refresh-token
-  Body: {
-  accessToken: String,
-  refreshToken: String
-  }
+```
+$ yarn install
+$ yarn server # start dev server
+```
 
-- Customer (must attach Authorization header):
+# Unit Test
 
-* Get customer list: GET method
-  Router: http://localhost:8080/api/customers
-* Create new customer: POST method
-  Router: http://localhost:8080/api/customers
-  Body: {
-  name: String,
-  description: String,
-  priorityNumber: Number,
-  status: String,
-  }
-* Get customer detail: GET method
-  Router: http://localhost:8080/api/customers/customerId
-* Update customer detail: PUT method
-  Router: http://localhost:8080/api/customers/customerId
-* Delete customer detail: DELETE method
-  Router: http://localhost:8080/api/customers/customerId
+```
+$ yarn test
+```
 
-- Project Type (must attach Authorization header):
+# Start server at
 
-* Get project type list: GET method
-  Router: http://localhost:8080/api/project-types
-* Create new project type: POST method
-  Router: http://localhost:8080/api/project-types
-  Body: {
-  name: String,
-  description: String,
-  priorityPoint: Number,
-  status: String,
-  }
-* Get project type detail: GET method
-  Router: http://localhost:8080/api/project-types/projectTypeId
-* Update project type detail: PUT method
-  Router: http://localhost:8080/api/project-types/projectTypeId
-* Delete project type detail: DELETE method
-  Router: http://localhost:8080/api/project-types/projectTypeId
-
-- Project status (must attach Authorization header):
-
-* Get project status list: GET method
-  Router: http://localhost:8080/api/project-statuses
-* Create new project status: POST method
-  Router: http://localhost:8080/api/project-statuses
-  Body: {
-  name: String,
-  description: String,
-  status: String,
-  }
-* Get project status detail: GET method
-  Router: http://localhost:8080/api/project-statuses/projectStatusId
-* Update project status detail: PUT method
-  Router: http://localhost:8080/api/project-statuses/projectStatusId
-* Delete project status detail: DELETE method
-  Router: http://localhost:8080/api/project-statuses/projectStatusId
-
-- Tech stack (must attach Authorization header):
-
-* Get tech stack list: GET method
-  Router: http://localhost:8080/api/tech-stacks
-* Create new tech stack: POST method
-  Router: http://localhost:8080/api/tech-stacks
-  Body: {
-  name: String,
-  description: String,
-  status: String,
-  }
-* Get tech stack detail: GET method
-  Router: http://localhost:8080/api/tech-stacks/techStackId
-* Update tech stack detail: PUT method
-  Router: http://localhost:8080/api/tech-stacks/techStackId
-* Delete tech stack detail: DELETE method
-  Router: http://localhost:8080/api/tech-stacks/techStackId
-
-- Project (must attach Authorization header):
-
-* Get project list: GET method
-  Router: http://localhost:8080/api/projects
-* Create new project: POST method
-  Router: http://localhost:8080/api/projects
-  Body: {
-  name: String,
-  description: String,
-  projectTypesId: [id],
-  techStacksId: [id],
-  departmentsId: [id],
-  staffsId: [id],
-  customersId: [id],
-  projectStatusId: id,
-  }
-* Get project detail: GET method
-  Router: http://localhost:8080/api/projects/projectId
-* Update project detail: PUT method
-  Router: http://localhost:8080/api/projects/projectId
-* Delete project detail: DELETE method
-  Router: http://localhost:8080/api/projects/projectId
-
-- Department (must attach Authorization header):
-
-* Get department list: GET method
-  Router: http://localhost:8080/api/departments
-* Create new department: POST method
-  Router: http://localhost:8080/api/departments
-  Body: {
-  name: String,
-  description: String,
-  techStacksId: ["id"],
-  projectsId: ["id"],
-  staffsId: ["id"],
-  }
-* Get department detail: GET method
-  Router: http://localhost:8080/api/departments/departmentId
-* Update department detail: PUT method
-  Router: http://localhost:8080/api/departments/departmentId
-* Delete department detail: DELETE method
-  Router: http://localhost:8080/api/departments/departmentId
-
-- Staff (must attach Authorization header):
-
-* Get staff list: GET method
-  Router: http://localhost:8080/api/staffs
-* Create new staff: POST method
-  Router: http://localhost:8080/api/staffs
-  Body: {
-  name: String,
-  email: String,
-  dob: Date,
-  phoneNumber: String,
-  address: String,
-  identityNumber: String,
-  languages: [String],
-  certs: [String],
-  rolesId: [id],
-  }
-* Get staff detail: GET method
-  Router: http://localhost:8080/api/staffs/staffId
-* Update staff detail: PUT method
-  Router: http://localhost:8080/api/staffs/staffId
-* Delete staff detail: DELETE method
-  Router: http://localhost:8080/api/staffs/staffId
-
-- Search (must attach Authorization header):
-
-* Get result: GET method
-  Router: http://localhost:8080/api/search?modelName&limit&page&sortBy&orderBy
+```
+127.0.0.1:8080 or localhost://8080
+```

@@ -1,0 +1,101 @@
+paths:
+  /api/customers:
+    get:
+      tags:
+        - Customer
+      summary: Get all customers
+      produces:
+        - application/json
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+    post:
+      tags:
+        - Customer
+      summary: Create new customer
+      requestBody:
+        description: Create new customer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createCustomer'
+      responses:
+        200:
+          description: Create data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Customer already exists
+  /api/customers/{id}:
+    get:
+      tags:
+        - Customer
+      summary: Get customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the customer id
+          required: true
+          type: string
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+        404:
+          description: Customer not exists
+    put:
+      tags:
+        - Customer
+      summary: Update customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the customer id
+          required: true
+          type: string
+      requestBody:
+        description: Update customer detail
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createCustomer'
+    delete:
+      tags:
+        - Customer
+      summary: Delete customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the customer id
+          required: true
+          type: string
+      responses:
+        200:
+          description: Delete data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Customer not exists
+
+definitions: # Schema definition for the request body
+  createCustomer:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      priorityNumber:
+        type: string
+      status:
+        type: string

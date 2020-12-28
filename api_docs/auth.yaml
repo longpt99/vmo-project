@@ -1,0 +1,66 @@
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      produces:
+        - application/json
+      requestBody:
+        description: Login account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/loginAuth'
+      responses:
+        200:
+          description: An object with token and basic info
+        404:
+          description: Account not exists
+  /api/auth/refresh-token: # path of the user from your endpoint
+    post: # endpoint request type (put request)
+      tags:
+        - Auth
+      summary: Create a new access token
+      produces:
+        - application/json
+      requestBody:
+        description: Login account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/refreshToken'
+      responses:
+        200:
+          description: An object with access token and refresh token
+        401:
+          description: Unauthorized users
+  /api/auth/profile:
+    get:
+      tags:
+        - Auth
+      summary: Get account profile
+      produces:
+        - application/json
+      responses:
+        200:
+          description: An object with account profile
+        401:
+          description: Unauthorized users
+definitions: # Schema definition for the request body
+  loginAuth:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  refreshToken:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string

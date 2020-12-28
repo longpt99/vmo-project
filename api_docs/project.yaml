@@ -1,0 +1,153 @@
+paths:
+  /api/projects:
+    get:
+      tags:
+        - Project
+      summary: Get all projects
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: findAll # name of parameter passed
+          description: find all projects
+          required: true
+          in: headers
+      responses:
+        200:
+          description: An object with record
+    post:
+      tags:
+        - Project
+      summary: Create new project
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: createOne # name of parameter passed
+          description: Create new project
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/createProject'
+      responses:
+        200:
+          description: Create data successfully
+          examples:
+            application/json:
+              - dataset_id: example_01
+        404:
+          description: project already exists
+  /api/projects/{id}:
+    get:
+      tags:
+        - Project
+      summary: Get customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the project id
+          required: true
+          type: string
+      responses:
+        200:
+          description: An object with record
+    put:
+      tags:
+        - Project
+      summary: Update project detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the project id
+          required: true
+          type: string
+        - name: updateOne # name of parameter passed
+          description: Update project detail
+          in: body
+          schema:
+            $ref: '#/definitions/updateProject'
+      responses:
+        200:
+          description: Update data successfully
+        404:
+          description: project not exists
+    delete:
+      tags:
+        - Project
+      summary: Delete project detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the project id
+          required: true
+          type: string
+      responses:
+        200:
+          description: Delete data successfully
+        404:
+          description: project not exists
+
+definitions: # Schema definition for the request body
+  createProject:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      techStacksId:
+        type: array
+        items:
+          type: string
+      projectTypesId:
+        type: array
+        items:
+          type: string
+      staffsId:
+        type: array
+        items:
+          type: string
+      customersId:
+        type: array
+        items:
+          type: string
+      departmentsId:
+        type: array
+        items:
+          type: string
+      projectStatusesId:
+        type: string
+  updateProject:
+    type: object
+    properties:
+      update:
+        $ref: '#/definitions/createProject'
+      remove:
+        type: object
+        properties:
+          techStacksId:
+            type: array
+            items:
+              type: string
+          projectTypesId:
+            type: array
+            items:
+              type: string
+          staffsId:
+            type: array
+            items:
+              type: string
+          customersId:
+            type: array
+            items:
+              type: string
+          departmentsId:
+            type: array
+            items:
+              type: string
+          projectStatusesId:
+            type: string

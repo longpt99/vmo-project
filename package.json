@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "webpack -w --config ./src/config/webpack/webpack.dev.js",
-    "server": "nodemon --inspect --exec  babel-node server.js",
+    "server": "nodemon --inspect -e js,json,yaml --exec babel-node server.js",
     "test": "mocha src/tests/*.test.js --require @babel/register --exit"
   },
   "dependencies": {
@@ -23,6 +23,8 @@
     "mongoose": "^5.10.15",
     "redis": "^3.0.2",
     "supertest": "^6.0.1",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },

@@ -1,3 +1,5 @@
 node_modules
 dist
 logs
+src/config/env/.env.dev
+src/config/env/.env.test

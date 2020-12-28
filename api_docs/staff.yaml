@@ -1,0 +1,187 @@
+paths:
+  /api/staffs:
+    get:
+      tags:
+        - Staff
+      summary: Get all staffs
+      responses:
+        200:
+          description: An object with record
+    post:
+      tags:
+        - Staff
+      summary: Create new staff
+      requestBody:
+        description: Create new staff
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createStaff'
+      responses:
+        200:
+          description: Create data successfully
+          examples:
+            application/json:
+              - dataset_id: example_01
+        404:
+          description: Staff already exists
+  /api/staffs/{id}:
+    get:
+      tags:
+        - Staff
+      summary: Get customer detail
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the staff id
+          required: true
+          type: string
+      responses:
+        200:
+          description: An object with record
+    put:
+      tags:
+        - Staff
+      summary: Update staff detail
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the staff id
+          required: true
+          type: string
+      requestBody:
+        description: Create new customer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/updateStaffInfo'
+      responses:
+        200:
+          description: Update data successfully
+        404:
+          description: Staff not exists
+    delete:
+      tags:
+        - Staff
+      summary: Delete staff detail
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the staff id
+          required: true
+          type: string
+      responses:
+        200:
+          description: Delete data successfully
+        404:
+          description: Staff not exists
+  /api/staffs/{id}/exp:
+    put:
+      tags:
+        - Staff
+      summary: Update staff exp
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the staff id
+          required: true
+          type: string
+      requestBody:
+        description: Update staff exp
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/updateStaffExp'
+      responses:
+        200:
+          description: Update data successfully
+        404:
+          description: Staff already exists
+
+definitions: # Schema definition for the request body
+  createStaff:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      identityNumber:
+        type: string
+      address:
+        type: string
+      languages:
+        type: array
+        items:
+          type: string
+      certs:
+        type: array
+        items:
+          type: string
+      skills:
+        type: array
+        items:
+          type: object
+          properties:
+            techStackId:
+              type: string
+            level:
+              type: string
+      role:
+        type: string
+  updateStaffInfo:
+    type: object
+    properties:
+      update:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        identityNumber:
+          type: string
+        address:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        certs:
+          type: array
+          items:
+            type: string
+        role:
+          type: string
+      remove:
+        type: object
+        properties:
+          techStacksId:
+            type: array
+            items:
+              type: string
+          projectsId:
+            type: array
+            items:
+              type: string
+          staffsId:
+            type: array
+            items:
+              type: string
+  updateStaffExp:
+    type: object
+    properties:
+      skills:
+        type: array
+        items:
+          type: object
+          properties:
+            techStackId:
+              type: string
+            level:
+              type: string

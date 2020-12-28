@@ -1,0 +1,104 @@
+paths:
+  /api/tech-stacks:
+    get:
+      tags:
+        - Tech stack
+      summary: Get all tech stacks
+      produces:
+        - application/json
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+    post:
+      tags:
+        - Tech stack
+      summary: Create new tech stack
+      produces:
+        - application/json
+      requestBody:
+        description: Create new tech stack
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createTechStack'
+      responses:
+        200:
+          description: Create data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Tech stack already exists
+  /api/tech-stacks/{id}:
+    get:
+      tags:
+        - Tech stack
+      summary: Get customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the tech stack id
+          required: true
+          type: string
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+        404:
+          description: Tech stack not exists
+    put:
+      tags:
+        - Tech stack
+      summary: Update tech stack detail
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the tech stack id
+          required: true
+          type: string
+      requestBody:
+        description: Update tech stack detail
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createTechStack'
+      responses:
+        200:
+          description: Update data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Tech stack not exists
+    delete:
+      tags:
+        - Tech stack
+      summary: Delete tech stack detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the tech stack id
+          required: true
+          type: string
+      responses:
+        200:
+          description: Delete data successfully
+        404:
+          description: tech stack not exists
+
+definitions: # Schema definition for the request body
+  createTechStack:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      status:
+        type: string

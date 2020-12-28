@@ -1,0 +1,104 @@
+paths:
+  /api/project-statuses:
+    get:
+      tags:
+        - Project status
+      summary: Get all Project statuses
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+    post:
+      tags:
+        - Project status
+      summary: Create new project status
+      requestBody:
+        description: Create new project status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createProjectStatus'
+      responses:
+        200:
+          description: Create data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Project status already exists
+  /api/project-statuses/{id}:
+    get:
+      tags:
+        - Project status
+      summary: Get customer detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the Project status id
+          required: true
+          type: string
+      responses:
+        200:
+          description: An object with record
+        401:
+          description: Unauthorized users
+        404:
+          description: Project status not exists
+    put:
+      tags:
+        - Project status
+      summary: Update project status detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the project status id
+          required: true
+          type: string
+      requestBody:
+        description: Update project status detail
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/createProjectStatus'
+      responses:
+        200:
+          description: Update data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Project status not exists
+    delete:
+      tags:
+        - Project status
+      summary: Delete project status detail
+      produces:
+        - application/json
+      parameters: # request parameters
+        - name: id # name of parameter passed
+          in: path # parameters in the path
+          description: path parameter takes the project status id
+          required: true
+          type: string
+      responses:
+        200:
+          description: Delete data successfully
+        401:
+          description: Unauthorized users
+        404:
+          description: Project status not exists
+
+definitions: # Schema definition for the request body
+  createProjectStatus:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      status:
+        type: string
