@@ -101,7 +101,8 @@ const createProjectService = async (payload) => {
     return handleResponse(
       200,
       'Create data successfully',
-      'CREATE_DATA_SUCCESSFULLY'
+      'CREATE_DATA_SUCCESSFULLY',
+      { recordId: projectId }
     );
   } catch (error) {
     throw error;
